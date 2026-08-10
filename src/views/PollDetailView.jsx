@@ -1,0 +1,205 @@
+import React from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import { CheckCircle, CalendarBlank } from '@phosphor-icons/react';
+import PollHeader from '../components/Poll/PollHeader';
+import PollQuestion from '../components/Poll/PollQuestion';
+import StepNavigator from '../components/Poll/StepNavigator';
+import QuestionEmptyState from '../components/Poll/QuestionEmptyState';
+import VoteConfirmModal from '../components/Poll/VoteConfirmModal';
+import { prelineColors } from '../theme/theme';
+
+import VoteSuccessModal from '../components/Poll/VoteSuccessModal';
+
+export default function PollDetailView({
+  selectedPoll,
+  activeQuestions,
+  unansweredQuestions,
+  currentQuestion,
+  currentStep,
+  totalSteps,
+  isLastStep,
+  isCurrentAnswered,
+  answers,
+  errors,
+  showConfirmModal,
+  showSuccessModal,
+  onBack,
+  onAnswerChange,
+  onNextStep,
+  onPrevStep,
+  onConfirmSubmit,
+  onCloseModal,
+  onCloseSuccessModal,
+  onCloseSuccessAndGoList,
+}) {
+  const isScheduled = (selectedPoll.status || '').toLowerCase() === 'scheduled' || (selectedPoll.status || '').toLowerCase() === 'upcoming';
+  const isReadOnlyStatus = selectedPoll.status !== 'ongoing' && selectedPoll.status !== 'OPEN';
+  const isAllAnswered = selectedPoll.userVoted && unansweredQuestions.length === 0;
+  const isCompletedView = (!isScheduled && isReadOnlyStatus) || isAllAnswered;
+  const hasQuestions = activeQuestions.length > 0;
+  const showEmptyState = isScheduled || !hasQuestions;
+
+  // Default fallback answers for completed polls if userAnswers not set
+  const defaultAnswersForCompleted = {};
+  if (isCompletedView) {
+    activeQuestions.forEach((q) => {
+      if (q.options && q.options.length > 0) {
+        defaultAnswersForCompleted[q.id] = q.options[0];
+      }
+    });
+  }
+
+  // Answers to display (merged session answers + saved userAnswers)
+  const displayAnswers = {
+    ...defaultAnswersForCompleted,
+    ...(selectedPoll.userAnswers || {}),
+    ...answers,
+  };
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', flex: 1, minHeight: 0, position: 'relative', overflow: 'hidden' }}>
+      {/* Poll Header */}
+      <PollHeader poll={selectedPoll} onBack={onBack} />
+
+      {/* Question Body */}
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: 'auto',
+          px: 2.5,
+          py: 2.5,
+          backgroundColor: prelineColors.slate[100],
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {showEmptyState ? (
+          /* Empty State */
+          <QuestionEmptyState />
+        ) : isCompletedView ? (
+          /* Read-Only Summary View: All active questions with saved answers, disabled */
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box
+              sx={{
+                p: 1.5,
+                mb: 2.5,
+                backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                borderRadius: '12px',
+                border: '1px solid rgba(16, 185, 129, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.25,
+              }}
+            >
+              <CheckCircle size={22} color="#059669" weight="fill" />
+              <Box>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: '#047857', fontSize: '0.85rem' }}>
+                  Vote Recorded
+                </Typography>
+                <Typography variant="caption" sx={{ color: prelineColors.slate[600], fontSize: '0.75rem' }}>
+                  Your answers have been submitted and cannot be changed.
+                </Typography>
+              </Box>
+            </Box>
+
+            {activeQuestions.map((q, idx) => (
+              <PollQuestion
+                key={q.id}
+                index={idx}
+                question={q}
+                answer={displayAnswers[q.id]}
+                onAnswerChange={onAnswerChange}
+                hasError={false}
+                disabled={true}
+              />
+            ))}
+          </Box>
+        ) : (
+          /* Wizard View: Single current question */
+          currentQuestion && (
+            <PollQuestion
+              key={currentQuestion.id}
+              index={currentStep}
+              question={currentQuestion}
+              answer={displayAnswers[currentQuestion.id]}
+              onAnswerChange={onAnswerChange}
+              hasError={Boolean(errors[currentQuestion.id])}
+              disabled={false}
+            />
+          )
+        )}
+      </Box>
+
+      {/* Step Navigator (Only shown during active voting wizard) */}
+      {!isCompletedView && !showEmptyState && hasQuestions && (
+        <StepNavigator
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          isLastStep={isLastStep}
+          isAnswered={isCurrentAnswered}
+          onNext={onNextStep}
+          onPrev={onPrevStep}
+        />
+      )}
+
+      {/* Footer for Scheduled Polls */}
+      {isScheduled && (
+        <Box
+          sx={{
+            p: 2,
+            backgroundColor: '#ffffff',
+            borderTop: `1px solid ${prelineColors.slate[200]}`,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1.25,
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+            <CalendarBlank size={22} color="#8b5cf6" weight="fill" />
+            <Typography variant="body2" sx={{ color: prelineColors.slate[700], fontWeight: 600, fontSize: '0.85rem' }}>
+              Voting opens on {selectedPoll.startDate || 'Scheduled Period'}
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={onBack}
+            sx={{
+              py: 1.25,
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              borderRadius: '10px',
+              border: `1px solid ${prelineColors.slate[300]}`,
+              color: prelineColors.slate[700],
+              textTransform: 'none',
+              '&:hover': {
+                border: `1px solid ${prelineColors.slate[300]}`,
+                backgroundColor: 'transparent',
+              },
+            }}
+          >
+            Back to Voting List
+          </Button>
+        </Box>
+      )}
+
+      {/* Confirmation Review Modal */}
+      <VoteConfirmModal
+        open={showConfirmModal}
+        onClose={onCloseModal}
+        onConfirm={onConfirmSubmit}
+        unansweredQuestions={unansweredQuestions}
+        answers={answers}
+        pollTitle={selectedPoll.title}
+      />
+
+      {/* Success Bottom Sheet Modal */}
+      <VoteSuccessModal
+        open={showSuccessModal}
+        onClose={onCloseSuccessAndGoList}
+        onViewResults={onCloseSuccessModal}
+        poll={selectedPoll}
+      />
+    </Box>
+  );
+}
