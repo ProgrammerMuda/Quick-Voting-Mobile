@@ -186,7 +186,7 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
               gap: 1,
             }}
           >
-            <Info size={18} color="#2563eb" weight="fill" style={{ flexShrink: 0, marginTop: 1 }} />
+            <Info size={22} color="#2563eb" weight="fill" style={{ flexShrink: 0, marginTop: 1 }} />
             <Typography variant="caption" sx={{ color: '#1d4ed8', fontSize: '0.725rem', lineHeight: 1.4 }}>
               In ownership-based voting, each vote is weighted proportionally based on the NPP percentage of units registered under the voter's name.
             </Typography>
