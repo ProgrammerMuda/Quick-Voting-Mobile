@@ -1,12 +1,12 @@
 import React from 'react';
 import { Box, Typography, Button, Slide, Backdrop, Divider } from '@mui/material';
-import { Key, House, Info, X } from '@phosphor-icons/react';
+import { House, Info, X } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
 
 export default function NppDetailModal({ open, onClose, userUnit }) {
   const units = userUnit?.unitsList || [
-    { unitNo: 'A0101', tower: 'Menara A', floor: 'Lantai 1', npp: 0.14 },
-    { unitNo: 'A0102', tower: 'Menara A', floor: 'Lantai 1', npp: 0.14 },
+    { unitNo: 'A0101', tower: 'Tower A', floor: 'Floor 1', npp: 0.14 },
+    { unitNo: 'A0102', tower: 'Tower A', floor: 'Floor 1', npp: 0.14 },
   ];
 
   const totalNpp = units.reduce((sum, u) => sum + (u.npp || 0.14), 0).toFixed(2);
@@ -62,28 +62,13 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
 
           {/* Header Title & Close Button */}
           <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Box
-                sx={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: '12px',
-                  backgroundColor: 'rgba(39, 178, 155, 0.1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Key size={24} color="#27b29b" weight="fill" />
-              </Box>
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.05rem', color: prelineColors.slate[800], lineHeight: 1.25 }}>
-                  Rincian Unit & Bobot NPP
-                </Typography>
-                <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontSize: '0.75rem' }}>
-                  Detail hak suara Nilai Perbandingan Proporsional
-                </Typography>
-              </Box>
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1.05rem', color: prelineColors.slate[800], lineHeight: 1.25 }}>
+                Unit & NPP Weight Breakdown
+              </Typography>
+              <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontSize: '0.75rem' }}>
+                Proportional Ownership Voting Weight Detail
+              </Typography>
             </Box>
 
             <Button
@@ -115,10 +100,10 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
           >
             <Box>
               <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontWeight: 500, fontSize: '0.725rem', display: 'block', mb: 0.25 }}>
-                Total Unit Terdaftar
+                Registered Units
               </Typography>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, color: prelineColors.slate[800], fontSize: '1rem' }}>
-                {totalUnits} Unit Hunian
+                {totalUnits} Unit(s)
               </Typography>
             </Box>
 
@@ -126,7 +111,7 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
 
             <Box sx={{ textAlign: 'right' }}>
               <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontWeight: 500, fontSize: '0.725rem', display: 'block', mb: 0.25 }}>
-                Total Bobot Suara NPP
+                Total NPP Voting Weight
               </Typography>
               <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1e8f7c', fontSize: '1.05rem' }}>
                 {totalNpp}% NPP
@@ -136,7 +121,7 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
 
           {/* Scrollable Unit Breakdown List */}
           <Typography variant="caption" sx={{ fontWeight: 600, color: prelineColors.slate[600], fontSize: '0.775rem', mb: 1, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-            Daftar Unit Yang Diwakili:
+            Units Represented:
           </Typography>
 
           <Box sx={{ overflowY: 'auto', flex: 1, maxHeight: 220, mb: 2.5, pr: 0.5 }}>
@@ -172,7 +157,7 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
                   </Box>
                   <Box>
                     <Typography variant="body2" sx={{ fontWeight: 600, color: prelineColors.slate[800], fontSize: '0.85rem' }}>
-                      Unit {u.unitNo}
+                      Unit No. {u.unitNo}
                     </Typography>
                     <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontSize: '0.725rem' }}>
                       {u.tower} • {u.floor}
@@ -185,7 +170,7 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
                     {u.npp}% NPP
                   </Typography>
                   <Typography variant="caption" sx={{ display: 'block', color: prelineColors.slate[400], fontSize: '0.675rem' }}>
-                    Bobot Suara
+                    Voting Weight
                   </Typography>
                 </Box>
               </Box>
@@ -206,32 +191,11 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
           >
             <Info size={18} color={prelineColors.slate[500]} weight="fill" style={{ flexShrink: 0, marginTop: 1 }} />
             <Typography variant="caption" sx={{ color: prelineColors.slate[600], fontSize: '0.725rem', lineHeight: 1.4 }}>
-              Dalam voting kepemilikan, bobot suara dihitung secara proporsional berdasarkan persentase NPP dari unit yang terdaftar atas nama pemilih.
+              In ownership-based voting, each vote is weighted proportionally based on the NPP percentage of units registered under the voter's name.
             </Typography>
           </Box>
 
-          {/* Close Action Button */}
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={onClose}
-            sx={{
-              py: 1.25,
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              borderRadius: '10px',
-              backgroundColor: '#27b29b',
-              color: '#ffffff',
-              boxShadow: 'none',
-              textTransform: 'none',
-              '&:hover': {
-                backgroundColor: '#27b29b',
-                boxShadow: 'none',
-              },
-            }}
-          >
-            Mengerti & Tutup
-          </Button>
+
         </Box>
       </Slide>
     </>

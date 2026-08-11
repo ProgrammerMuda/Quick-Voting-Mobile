@@ -98,10 +98,10 @@ export default function PollQuestion({
         <Chip
           label={
             isNppCategory
-              ? 'Kepemilikan (NPP)'
+              ? 'Ownership (NPP)'
               : isPengelolaan
-              ? 'Pengelolaan (1 Man 1 Vote)'
-              : 'Penghunian (1 Man 1 Vote)'
+              ? 'Management (1 Man 1 Vote)'
+              : 'Residency (1 Man 1 Vote)'
           }
           size="small"
           onClick={isNppCategory ? () => setShowNppModal(true) : undefined}
@@ -156,7 +156,7 @@ export default function PollQuestion({
               variant="caption"
               sx={{ fontWeight: 600, color: '#1e8f7c', fontSize: '0.725rem', lineHeight: 1 }}
             >
-              Lihat Unit & Bobot Suara Anda
+              View Your Units & Voting Weight
             </Typography>
             <CaretRight size={13} color="#1e8f7c" weight="bold" />
           </Box>
