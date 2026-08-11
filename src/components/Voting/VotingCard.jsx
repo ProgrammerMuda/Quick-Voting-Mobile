@@ -26,58 +26,7 @@ export default function VotingCard({ item, onSelectPoll }) {
         {/* Header Row: Type Pill Badge (Left) & Solid Status Pill (Right) */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
           {/* JENIS VOTING BADGE */}
-          {item.votingCategory === 'KEPEMILIKAN' ? (
-            <Chip
-              icon={<Key size={17} color="#27b29b" weight="fill" />}
-              label="Kepemilikan (NPP)"
-              size="small"
-              sx={{
-                backgroundColor: 'rgba(39, 178, 155, 0.08)',
-                color: '#1e8f7c',
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                borderRadius: '100px',
-                px: 1,
-                height: 30,
-                border: '1px solid rgba(39, 178, 155, 0.25)',
-                '& .MuiChip-label': { px: 0.75 },
-              }}
-            />
-          ) : item.votingCategory === 'PENGELOLAAN' ? (
-            <Chip
-              icon={<Buildings size={17} color="#27b29b" weight="fill" />}
-              label="Pengelolaan (1 Man 1 Vote)"
-              size="small"
-              sx={{
-                backgroundColor: prelineColors.slate[100],
-                color: prelineColors.slate[700],
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                borderRadius: '100px',
-                px: 1,
-                height: 30,
-                border: `1px solid ${prelineColors.slate[200]}`,
-                '& .MuiChip-label': { px: 0.75 },
-              }}
-            />
-          ) : item.votingCategory === 'PENGHUNIAN' ? (
-            <Chip
-              icon={<House size={17} color="#27b29b" weight="fill" />}
-              label="Penghunian (1 Man 1 Vote)"
-              size="small"
-              sx={{
-                backgroundColor: prelineColors.slate[100],
-                color: prelineColors.slate[700],
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                borderRadius: '100px',
-                px: 1,
-                height: 30,
-                border: `1px solid ${prelineColors.slate[200]}`,
-                '& .MuiChip-label': { px: 0.75 },
-              }}
-            />
-          ) : isEvent ? (
+          {isEvent ? (
             <Chip
               icon={<CalendarCheck size={18} color="#27b29b" weight="fill" />}
               label="Event Voting"

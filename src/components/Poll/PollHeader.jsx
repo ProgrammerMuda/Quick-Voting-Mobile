@@ -63,29 +63,12 @@ export default function PollHeader({ poll, onBack }) {
 
       {/* Header Body: pt: 0 (Exact 1:1 match with VotingFilter spacing) */}
       <Box sx={{ px: 2.5, pt: 0, pb: 2.5 }}>
-        {/* Badges Row (Voting Category Pill + Status Pill) */}
+        {/* Badges Row (Type Pill + Status Pill) */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5, flexWrap: 'nowrap' }}>
-          {poll.votingCategory === 'KEPEMILIKAN' ? (
+          {isEvent ? (
             <Chip
-              icon={<Key size={17} color="#27b29b" weight="fill" />}
-              label="Kepemilikan (NPP)"
-              size="small"
-              sx={{
-                backgroundColor: 'rgba(39, 178, 155, 0.08)',
-                color: '#1e8f7c',
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                borderRadius: '100px',
-                px: 1,
-                height: 30,
-                border: '1px solid rgba(39, 178, 155, 0.25)',
-                '& .MuiChip-label': { px: 0.75 },
-              }}
-            />
-          ) : poll.votingCategory === 'PENGELOLAAN' ? (
-            <Chip
-              icon={<Buildings size={17} color="#27b29b" weight="fill" />}
-              label="Pengelolaan (1 Man 1 Vote)"
+              icon={<CalendarCheck size={18} color="#27b29b" weight="fill" />}
+              label="Event Voting"
               size="small"
               sx={{
                 backgroundColor: prelineColors.slate[100],
@@ -96,24 +79,7 @@ export default function PollHeader({ poll, onBack }) {
                 px: 1,
                 height: 30,
                 border: `1px solid ${prelineColors.slate[200]}`,
-                '& .MuiChip-label': { px: 0.75 },
-              }}
-            />
-          ) : poll.votingCategory === 'PENGHUNIAN' ? (
-            <Chip
-              icon={<House size={17} color="#27b29b" weight="fill" />}
-              label="Penghunian (1 Man 1 Vote)"
-              size="small"
-              sx={{
-                backgroundColor: prelineColors.slate[100],
-                color: prelineColors.slate[700],
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                borderRadius: '100px',
-                px: 1,
-                height: 30,
-                border: `1px solid ${prelineColors.slate[200]}`,
-                '& .MuiChip-label': { px: 0.75 },
+                '& .MuiChip-label': { px: 1 },
               }}
             />
           ) : (
@@ -137,34 +103,6 @@ export default function PollHeader({ poll, onBack }) {
 
           <VotingStatus status={poll.status} deadline={poll.deadline} />
         </Box>
-
-        {/* Tenant Unit & NPP Weight Banner */}
-        {poll.userUnit && (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              p: 1.25,
-              mb: 1.5,
-              backgroundColor: 'rgba(39, 178, 155, 0.07)',
-              border: '1px solid rgba(39, 178, 155, 0.18)',
-              borderRadius: '10px',
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Key size={18} color="#27b29b" weight="fill" />
-              <Typography variant="body2" sx={{ fontWeight: 600, color: prelineColors.slate[800], fontSize: '0.8rem' }}>
-                Unit {poll.userUnit.unitNo}
-              </Typography>
-            </Box>
-            <Typography variant="caption" sx={{ color: '#1e8f7c', fontWeight: 600, fontSize: '0.775rem' }}>
-              {poll.votingCategory === 'KEPEMILIKAN'
-                ? `Bobot Suara NPP: ${poll.userUnit.npp}`
-                : `Hak Suara: 1 Man 1 Vote`}
-            </Typography>
-          </Box>
-        )}
 
         {/* Poll Title */}
         <Typography
