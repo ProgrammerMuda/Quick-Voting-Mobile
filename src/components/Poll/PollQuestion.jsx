@@ -9,7 +9,7 @@ import {
   FormHelperText,
   LinearProgress,
 } from '@mui/material';
-import { CheckCircle, ChartBar, Key, Buildings, House } from '@phosphor-icons/react';
+import { CheckCircle, ChartBar, Key, Buildings, House, Lightning } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
 
 /**
@@ -94,15 +94,7 @@ export default function PollQuestion({
       {/* Question Type Badge Header & Tenant Unit NPP Info */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
         <Chip
-          icon={
-            isNppCategory ? (
-              <Key size={14} color="#27b29b" weight="fill" />
-            ) : isPengelolaan ? (
-              <Buildings size={14} color="#27b29b" weight="fill" />
-            ) : (
-              <House size={14} color="#27b29b" weight="fill" />
-            )
-          }
+          icon={<Lightning size={17} color="#27b29b" weight="fill" />}
           label={
             isNppCategory
               ? 'Kepemilikan (NPP)'
@@ -112,15 +104,15 @@ export default function PollQuestion({
           }
           size="small"
           sx={{
-            height: 24,
-            fontSize: '0.725rem',
+            height: 26,
+            fontSize: '0.775rem',
             fontWeight: 600,
             backgroundColor: prelineColors.slate[100],
             color: prelineColors.slate[800],
             border: `1px solid ${prelineColors.slate[200]}`,
             borderRadius: '100px',
-            px: 0.5,
-            '& .MuiChip-label': { px: 0.75 },
+            px: 0.75,
+            '& .MuiChip-label': { px: 0.85 },
           }}
         />
 
