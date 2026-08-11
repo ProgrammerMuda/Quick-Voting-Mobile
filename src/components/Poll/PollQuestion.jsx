@@ -126,7 +126,7 @@ export default function PollQuestion({
               alignItems: 'center',
               gap: 0.5,
               px: 1.25,
-              py: 0.4,
+              height: 26,
               backgroundColor: 'rgba(39, 178, 155, 0.08)',
               border: '1px solid rgba(39, 178, 155, 0.25)',
               borderRadius: '100px',
@@ -147,7 +147,7 @@ export default function PollQuestion({
               variant="caption"
               sx={{ fontWeight: 600, color: '#1e8f7c', fontSize: '0.725rem', lineHeight: 1 }}
             >
-              View Your Units & Voting Weight
+              View Your Unit
             </Typography>
             <CaretRight size={13} color="#1e8f7c" weight="bold" />
           </Box>
