@@ -9,7 +9,7 @@ import {
   FormHelperText,
   LinearProgress,
 } from '@mui/material';
-import { CheckCircle, ChartBar, Key, Buildings, House, CheckSquare, Info } from '@phosphor-icons/react';
+import { CheckCircle, ChartBar, Key, Buildings, House, CheckSquare, Info, CaretRight } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
 import NppDetailModal from './NppDetailModal';
 
@@ -126,30 +126,29 @@ export default function PollQuestion({
           }}
         />
 
-        {/* Tenant Unit & Bobot NPP Info Pill for Kepemilikan (NPP) Questions — Clickable Mobile Touch */}
+        {/* Tenant Unit & Bobot NPP Info Pill with explicit CTA for Bottom Sheet */}
         {isNppCategory && (
           <Box
             onClick={() => setShowNppModal(true)}
             sx={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 0.75,
-              px: 1.35,
+              gap: 0.85,
+              px: 1.5,
               py: 0.45,
               backgroundColor: 'rgba(39, 178, 155, 0.08)',
-              border: '1px dashed rgba(39, 178, 155, 0.4)',
+              border: '1px solid rgba(39, 178, 155, 0.3)',
               borderRadius: '100px',
               cursor: 'pointer',
               userSelect: 'none',
               transition: 'all 0.15s ease',
-              boxShadow: '0 1px 3px rgba(39, 178, 155, 0.08)',
+              boxShadow: '0 1px 3px rgba(39, 178, 155, 0.1)',
               '&:hover': {
-                backgroundColor: 'rgba(39, 178, 155, 0.15)',
-                borderStyle: 'solid',
+                backgroundColor: 'rgba(39, 178, 155, 0.16)',
                 borderColor: '#27b29b',
               },
               '&:active': {
-                transform: 'scale(0.95)',
+                transform: 'scale(0.96)',
                 backgroundColor: 'rgba(39, 178, 155, 0.22)',
               },
             }}
@@ -160,10 +159,26 @@ export default function PollQuestion({
             <Typography variant="caption" sx={{ color: prelineColors.slate[400], fontSize: '0.65rem' }}>
               •
             </Typography>
-            <Typography variant="caption" sx={{ fontWeight: 700, color: '#1e8f7c', fontSize: '0.725rem' }}>
+            <Typography variant="caption" sx={{ fontWeight: 700, color: prelineColors.slate[800], fontSize: '0.725rem' }}>
               Bobot NPP: {question.userUnit?.npp || '0.14%'}
             </Typography>
-            <Info size={14} color="#1e8f7c" weight="fill" style={{ flexShrink: 0, marginLeft: 2 }} />
+
+            <Box
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.25,
+                ml: 0.25,
+                pl: 0.85,
+                borderLeft: '1px solid rgba(39, 178, 155, 0.3)',
+                color: '#1e8f7c',
+                fontWeight: 700,
+                fontSize: '0.725rem',
+              }}
+            >
+              <span>Lihat Rincian</span>
+              <CaretRight size={13} color="#1e8f7c" weight="bold" />
+            </Box>
           </Box>
         )}
       </Box>
