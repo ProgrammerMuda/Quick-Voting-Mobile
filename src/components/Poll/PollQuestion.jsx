@@ -9,8 +9,9 @@ import {
   FormHelperText,
   LinearProgress,
 } from '@mui/material';
-import { CheckCircle, ChartBar, Key, Buildings, House, CheckSquare } from '@phosphor-icons/react';
+import { CheckCircle, ChartBar, Key, Buildings, House, CheckSquare, Info } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
+import NppDetailModal from './NppDetailModal';
 
 /**
  * Generate consistent mock live results for question options.
@@ -64,6 +65,7 @@ export default function PollQuestion({
 
   // Smooth entrance animation for progress bars when opening details
   const [animated, setAnimated] = useState(false);
+  const [showNppModal, setShowNppModal] = useState(false);
 
   useEffect(() => {
     if (disabled) {
@@ -115,9 +117,10 @@ export default function PollQuestion({
           }}
         />
 
-        {/* Tenant Unit & Bobot NPP Info Pill for Kepemilikan (NPP) Questions */}
+        {/* Tenant Unit & Bobot NPP Info Pill for Kepemilikan (NPP) Questions — Clickable */}
         {isNppCategory && (
           <Box
+            onClick={() => setShowNppModal(true)}
             sx={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -125,8 +128,14 @@ export default function PollQuestion({
               px: 1.25,
               py: 0.35,
               backgroundColor: 'rgba(39, 178, 155, 0.06)',
-              border: '1px solid rgba(39, 178, 155, 0.2)',
+              border: '1px solid rgba(39, 178, 155, 0.25)',
               borderRadius: '100px',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              '&:hover': {
+                backgroundColor: 'rgba(39, 178, 155, 0.14)',
+                borderColor: '#27b29b',
+              },
             }}
           >
             <Typography variant="caption" sx={{ fontWeight: 600, color: prelineColors.slate[700], fontSize: '0.7rem' }}>
@@ -138,6 +147,7 @@ export default function PollQuestion({
             <Typography variant="caption" sx={{ fontWeight: 700, color: '#1e8f7c', fontSize: '0.7rem' }}>
               Bobot NPP: {question.userUnit?.npp || '0.14%'}
             </Typography>
+            <Info size={14} color="#1e8f7c" weight="bold" />
           </Box>
         )}
       </Box>
@@ -327,6 +337,13 @@ export default function PollQuestion({
           Please select an answer to continue
         </FormHelperText>
       )}
+
+      {/* NPP Detail Breakdown Bottom Sheet Modal */}
+      <NppDetailModal
+        open={showNppModal}
+        onClose={() => setShowNppModal(false)}
+        userUnit={question.userUnit}
+      />
     </Box>
   );
 }
