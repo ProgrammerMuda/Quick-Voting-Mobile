@@ -27,6 +27,7 @@ export default function QuestionEmptyState() {
           maxWidth: '85%',
           objectFit: 'contain',
           mb: 2.5,
+          borderRadius: '16px',
         }}
       />
 
