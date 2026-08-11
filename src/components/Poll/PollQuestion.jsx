@@ -94,7 +94,6 @@ export default function PollQuestion({
       {/* Question Type Badge Header & Tenant Unit NPP Info */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
         <Chip
-          icon={<CheckSquare size={17} color="#27b29b" weight="bold" />}
           label={
             isNppCategory
               ? 'Kepemilikan (NPP)'
@@ -111,8 +110,8 @@ export default function PollQuestion({
             color: prelineColors.slate[800],
             border: `1px solid ${prelineColors.slate[200]}`,
             borderRadius: '100px',
-            px: 0.75,
-            '& .MuiChip-label': { px: 0.85 },
+            px: 0.5,
+            '& .MuiChip-label': { px: 1 },
           }}
         />
 
