@@ -110,6 +110,7 @@ export default function PollDetailView({
                   ...q,
                   votingCategory: q.votingCategory || selectedPoll.votingCategory,
                   mechanism: q.mechanism || selectedPoll.mechanism,
+                  userUnit: q.userUnit || selectedPoll.userUnit,
                 }}
                 answer={displayAnswers[q.id]}
                 onAnswerChange={onAnswerChange}
@@ -128,6 +129,7 @@ export default function PollDetailView({
                 ...currentQuestion,
                 votingCategory: currentQuestion.votingCategory || selectedPoll.votingCategory,
                 mechanism: currentQuestion.mechanism || selectedPoll.mechanism,
+                userUnit: currentQuestion.userUnit || selectedPoll.userUnit,
               }}
               answer={displayAnswers[currentQuestion.id]}
               onAnswerChange={onAnswerChange}

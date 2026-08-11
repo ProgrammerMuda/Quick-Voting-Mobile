@@ -91,8 +91,8 @@ export default function PollQuestion({
         transition: 'all 0.2s ease',
       }}
     >
-      {/* Question Type Badge Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.25 }}>
+      {/* Question Type Badge Header & Tenant Unit NPP Info */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
         <Chip
           icon={
             isNppCategory ? (
@@ -129,6 +129,32 @@ export default function PollQuestion({
             px: 0.5,
           }}
         />
+
+        {/* Tenant Unit & Bobot NPP Info Pill for Kepemilikan (NPP) Questions */}
+        {isNppCategory && (
+          <Box
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 0.75,
+              px: 1.25,
+              py: 0.35,
+              backgroundColor: 'rgba(39, 178, 155, 0.06)',
+              border: '1px solid rgba(39, 178, 155, 0.2)',
+              borderRadius: '100px',
+            }}
+          >
+            <Typography variant="caption" sx={{ fontWeight: 600, color: prelineColors.slate[700], fontSize: '0.7rem' }}>
+              {question.userUnit?.unitNo ? `Unit ${question.userUnit.unitNo}` : 'Unit A0101'} ({question.userUnit?.totalUnits || 1} Unit)
+            </Typography>
+            <Typography variant="caption" sx={{ color: prelineColors.slate[400], fontSize: '0.65rem' }}>
+              •
+            </Typography>
+            <Typography variant="caption" sx={{ fontWeight: 700, color: '#1e8f7c', fontSize: '0.7rem' }}>
+              Bobot NPP: {question.userUnit?.npp || '0.14%'}
+            </Typography>
+          </Box>
+        )}
       </Box>
 
       {/* Question Title */}
