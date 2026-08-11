@@ -7,7 +7,6 @@ import {
   Radio,
   FormControlLabel,
   FormHelperText,
-  LinearProgress,
 } from '@mui/material';
 import { CheckCircle, ChartBar, Key, Buildings, House, CheckSquare, Info, CaretRight } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
@@ -272,20 +271,31 @@ export default function PollQuestion({
                     </Typography>
                   </Box>
 
-                  <LinearProgress
-                    variant="determinate"
-                    value={animated ? opt.percentage : 0}
+                  {/* Custom animated progress bar — width-based for reliable CSS transition */}
+                  <Box
                     sx={{
                       height: 8,
-                      borderRadius: 4,
+                      borderRadius: '100px',
                       backgroundColor: prelineColors.slate[100],
-                      '& .MuiLinearProgress-bar': {
-                        backgroundColor: isUserChoice ? '#27b29b' : prelineColors.slate[300],
-                        borderRadius: 4,
-                        transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
-                      },
+                      overflow: 'hidden',
+                      position: 'relative',
                     }}
-                  />
+                  >
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        height: '100%',
+                        width: animated ? `${opt.percentage}%` : '0%',
+                        backgroundColor: isUserChoice ? '#27b29b' : prelineColors.slate[300],
+                        borderRadius: '100px',
+                        transition: animated
+                          ? `width 0.75s cubic-bezier(0.4, 0, 0.2, 1) ${idx * 80}ms`
+                          : 'none',
+                      }}
+                    />
+                  </Box>
                 </Box>
               );
             })}
