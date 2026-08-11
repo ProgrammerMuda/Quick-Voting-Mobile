@@ -126,59 +126,39 @@ export default function PollQuestion({
           }}
         />
 
-        {/* Tenant Unit & Bobot NPP Info Pill with explicit CTA for Bottom Sheet */}
+        {/* CTA to open NPP Unit breakdown Bottom Sheet */}
         {isNppCategory && (
           <Box
             onClick={() => setShowNppModal(true)}
             sx={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 0.85,
-              px: 1.5,
-              py: 0.45,
+              gap: 0.5,
+              px: 1.25,
+              py: 0.4,
               backgroundColor: 'rgba(39, 178, 155, 0.08)',
-              border: '1px solid rgba(39, 178, 155, 0.3)',
+              border: '1px solid rgba(39, 178, 155, 0.25)',
               borderRadius: '100px',
               cursor: 'pointer',
               userSelect: 'none',
               transition: 'all 0.15s ease',
-              boxShadow: '0 1px 3px rgba(39, 178, 155, 0.1)',
               '&:hover': {
-                backgroundColor: 'rgba(39, 178, 155, 0.16)',
+                backgroundColor: 'rgba(39, 178, 155, 0.14)',
                 borderColor: '#27b29b',
               },
               '&:active': {
                 transform: 'scale(0.96)',
-                backgroundColor: 'rgba(39, 178, 155, 0.22)',
+                backgroundColor: 'rgba(39, 178, 155, 0.2)',
               },
             }}
           >
-            <Typography variant="caption" sx={{ fontWeight: 600, color: prelineColors.slate[700], fontSize: '0.725rem' }}>
-              {question.userUnit?.totalUnits || 1} Unit
-            </Typography>
-            <Typography variant="caption" sx={{ color: prelineColors.slate[400], fontSize: '0.65rem' }}>
-              •
-            </Typography>
-            <Typography variant="caption" sx={{ fontWeight: 700, color: prelineColors.slate[800], fontSize: '0.725rem' }}>
-              Bobot NPP: {question.userUnit?.npp || '0.14%'}
-            </Typography>
-
-            <Box
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.25,
-                ml: 0.25,
-                pl: 0.85,
-                borderLeft: '1px solid rgba(39, 178, 155, 0.3)',
-                color: '#1e8f7c',
-                fontWeight: 700,
-                fontSize: '0.725rem',
-              }}
+            <Typography
+              variant="caption"
+              sx={{ fontWeight: 600, color: '#1e8f7c', fontSize: '0.725rem', lineHeight: 1 }}
             >
-              <span>Lihat Rincian</span>
-              <CaretRight size={13} color="#1e8f7c" weight="bold" />
-            </Box>
+              Lihat Unit & Bobot Suara Anda
+            </Typography>
+            <CaretRight size={13} color="#1e8f7c" weight="bold" />
           </Box>
         )}
       </Box>
