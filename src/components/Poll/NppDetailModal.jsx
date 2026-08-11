@@ -41,11 +41,8 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
             borderTopRightRadius: '24px',
             px: 3,
             pt: 1.5,
-            pb: 3.5,
+            pb: 4,
             boxShadow: '0 -8px 30px rgba(0,0,0,0.15)',
-            maxHeight: '85vh',
-            display: 'flex',
-            flexDirection: 'column',
           }}
         >
           {/* Top Drag Handle */}
@@ -124,7 +121,7 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
             Units Represented:
           </Typography>
 
-          <Box sx={{ overflowY: 'auto', flex: 1, maxHeight: 220, mb: 2.5, pr: 0.5 }}>
+          <Box sx={{ mb: 2.5, pr: 0.5 }}>
             {units.map((u, idx) => (
               <Box
                 key={idx}
@@ -177,20 +174,20 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
             ))}
           </Box>
 
-          {/* Info Note */}
+          {/* Info Note — Blue */}
           <Box
             sx={{
               p: 1.25,
-              mb: 2.5,
-              backgroundColor: prelineColors.slate[100],
+              backgroundColor: 'rgba(59, 130, 246, 0.07)',
+              border: '1px solid rgba(59, 130, 246, 0.18)',
               borderRadius: '10px',
               display: 'flex',
               alignItems: 'flex-start',
               gap: 1,
             }}
           >
-            <Info size={18} color={prelineColors.slate[500]} weight="fill" style={{ flexShrink: 0, marginTop: 1 }} />
-            <Typography variant="caption" sx={{ color: prelineColors.slate[600], fontSize: '0.725rem', lineHeight: 1.4 }}>
+            <Info size={18} color="#2563eb" weight="fill" style={{ flexShrink: 0, marginTop: 1 }} />
+            <Typography variant="caption" sx={{ color: '#1d4ed8', fontSize: '0.725rem', lineHeight: 1.4 }}>
               In ownership-based voting, each vote is weighted proportionally based on the NPP percentage of units registered under the voter's name.
             </Typography>
           </Box>
