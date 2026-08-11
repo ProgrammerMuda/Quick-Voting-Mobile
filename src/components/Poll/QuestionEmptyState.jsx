@@ -19,15 +19,14 @@ export default function QuestionEmptyState() {
       {/* Custom Empty State Illustration */}
       <Box
         component="img"
-        src="/empty-voting.png"
+        src="/empty-question.jpg"
         alt="No Questions Available"
         sx={{
-          width: 280,
+          width: 220,
           height: 'auto',
-          maxWidth: '95%',
+          maxWidth: '85%',
           objectFit: 'contain',
           mb: 2.5,
-          borderRadius: '16px',
         }}
       />
 
