@@ -110,7 +110,7 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
               <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontWeight: 500, fontSize: '0.725rem', display: 'block', mb: 0.25 }}>
                 Total NPP Voting Weight
               </Typography>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1e8f7c', fontSize: '1.05rem' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#27b29b', fontSize: '1.05rem' }}>
                 {totalNpp}% NPP
               </Typography>
             </Box>
