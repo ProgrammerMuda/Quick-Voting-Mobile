@@ -104,6 +104,7 @@ export default function PollQuestion({
               : 'Penghunian (1 Man 1 Vote)'
           }
           size="small"
+          onClick={isNppCategory ? () => setShowNppModal(true) : undefined}
           sx={{
             height: 26,
             fontSize: '0.775rem',
@@ -113,11 +114,19 @@ export default function PollQuestion({
             border: `1px solid ${prelineColors.slate[200]}`,
             borderRadius: '100px',
             px: 0.5,
+            cursor: isNppCategory ? 'pointer' : 'default',
+            userSelect: 'none',
             '& .MuiChip-label': { px: 1 },
+            '&:active': isNppCategory
+              ? {
+                  transform: 'scale(0.96)',
+                  backgroundColor: prelineColors.slate[200],
+                }
+              : undefined,
           }}
         />
 
-        {/* Tenant Unit & Bobot NPP Info Pill for Kepemilikan (NPP) Questions — Clickable */}
+        {/* Tenant Unit & Bobot NPP Info Pill for Kepemilikan (NPP) Questions — Clickable Mobile Touch */}
         {isNppCategory && (
           <Box
             onClick={() => setShowNppModal(true)}
@@ -125,29 +134,36 @@ export default function PollQuestion({
               display: 'inline-flex',
               alignItems: 'center',
               gap: 0.75,
-              px: 1.25,
-              py: 0.35,
-              backgroundColor: 'rgba(39, 178, 155, 0.06)',
-              border: '1px solid rgba(39, 178, 155, 0.25)',
+              px: 1.35,
+              py: 0.45,
+              backgroundColor: 'rgba(39, 178, 155, 0.08)',
+              border: '1px dashed rgba(39, 178, 155, 0.4)',
               borderRadius: '100px',
               cursor: 'pointer',
+              userSelect: 'none',
               transition: 'all 0.15s ease',
+              boxShadow: '0 1px 3px rgba(39, 178, 155, 0.08)',
               '&:hover': {
-                backgroundColor: 'rgba(39, 178, 155, 0.14)',
+                backgroundColor: 'rgba(39, 178, 155, 0.15)',
+                borderStyle: 'solid',
                 borderColor: '#27b29b',
+              },
+              '&:active': {
+                transform: 'scale(0.95)',
+                backgroundColor: 'rgba(39, 178, 155, 0.22)',
               },
             }}
           >
-            <Typography variant="caption" sx={{ fontWeight: 600, color: prelineColors.slate[700], fontSize: '0.7rem' }}>
+            <Typography variant="caption" sx={{ fontWeight: 600, color: prelineColors.slate[700], fontSize: '0.725rem' }}>
               {question.userUnit?.totalUnits || 1} Unit
             </Typography>
             <Typography variant="caption" sx={{ color: prelineColors.slate[400], fontSize: '0.65rem' }}>
               •
             </Typography>
-            <Typography variant="caption" sx={{ fontWeight: 700, color: '#1e8f7c', fontSize: '0.7rem' }}>
+            <Typography variant="caption" sx={{ fontWeight: 700, color: '#1e8f7c', fontSize: '0.725rem' }}>
               Bobot NPP: {question.userUnit?.npp || '0.14%'}
             </Typography>
-            <Info size={14} color="#1e8f7c" weight="bold" />
+            <Info size={14} color="#1e8f7c" weight="fill" style={{ flexShrink: 0, marginLeft: 2 }} />
           </Box>
         )}
       </Box>
