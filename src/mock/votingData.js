@@ -2,6 +2,10 @@ export const MOCK_VOTING_ITEMS = [
   {
     id: 'poll-1',
     itemType: 'POLL',
+    votingCategory: 'PENGELOLAAN',
+    votingCategoryText: 'Voting Pengelolaan',
+    mechanism: 'ONE_MAN_ONE_VOTE',
+    userUnit: { unitNo: 'A0101', npp: '0.14%' },
     title: 'Survei Kepuasan Fasilitas Gedung',
     description: 'Bantu kami meningkatkan kualitas fasilitas dan layanan di gedung Anda.',
     startDate: '1 Agustus 2026 • 08:00 WIB',
@@ -64,12 +68,17 @@ export const MOCK_VOTING_ITEMS = [
   {
     id: 'poll-2',
     itemType: 'POLL',
+    votingCategory: 'KEPEMILIKAN',
+    votingCategoryText: 'Voting Kepemilikan',
+    mechanism: 'NPP',
+    userUnit: { unitNo: 'A0101', npp: '0.14%' },
     title: 'Usulan Perpanjangan Jam Operasional Gym',
     description: 'Berikan suara Anda mengenai usulan pembukaan fasilitas gym selama 24 jam.',
     startDate: '10 Agustus 2026 • 09:00 WIB',
     deadline: '25 Agustus 2026 • 18:00 WIB',
     status: 'ongoing',
-    answeredQuestionIds: ['p2_q1'], // Pertanyaan yang sudah dijawab
+    userVoted: true,
+    answeredQuestionIds: ['p2_q1'],
     userAnswers: {
       p2_q1: 'Ya, sangat mendukung akses 24 jam',
     },
@@ -92,7 +101,7 @@ export const MOCK_VOTING_ITEMS = [
         question: 'Seberapa sering Anda menggunakan fasilitas gym saat ini?',
         type: 'single_choice',
         isRequired: true,
-        isActive: true, // Admin baru aktifkan pertanyaan ini
+        isActive: true,
         options: [
           'Setiap hari (5–7 kali seminggu)',
           'Mingguan (2–4 kali seminggu)',
@@ -106,6 +115,10 @@ export const MOCK_VOTING_ITEMS = [
   {
     id: 'poll-3',
     itemType: 'POLL',
+    votingCategory: 'PENGHUNIAN',
+    votingCategoryText: 'Voting Penghunian',
+    mechanism: 'ONE_MAN_ONE_VOTE',
+    userUnit: { unitNo: 'A0101', npp: '0.14%' },
     title: 'Konsep Desain Ulang Co-Working Lounge',
     description: 'Tentukan tema renovasi area lounge dan kerja di lantai 5.',
     startDate: '20 Agustus 2026 • 09:00 WIB',
@@ -141,9 +154,14 @@ export const MOCK_VOTING_ITEMS = [
       },
     ],
   },
+
   {
     id: 'poll-4',
     itemType: 'POLL',
+    votingCategory: 'PENGELOLAAN',
+    votingCategoryText: 'Voting Pengelolaan',
+    mechanism: 'ONE_MAN_ONE_VOTE',
+    userUnit: { unitNo: 'A0101', npp: '0.14%' },
     title: 'Survei Kebijakan Hewan Peliharaan',
     description: 'Survei komunitas mengenai regulasi hewan peliharaan di unit hunian.',
     startDate: '15 Juli 2026 • 08:00 WIB',
@@ -184,9 +202,14 @@ export const MOCK_VOTING_ITEMS = [
       },
     ],
   },
+
   {
     id: 'poll-5',
     itemType: 'POLL',
+    votingCategory: 'KEPEMILIKAN',
+    votingCategoryText: 'Voting Kepemilikan',
+    mechanism: 'NPP',
+    userUnit: { unitNo: 'A0101', npp: '0.14%' },
     title: 'Aturan Jam Tenang Rooftop Garden',
     description: 'Pengumuman hasil voting pembatasan kebisingan di taman atap pada malam hari.',
     startDate: '1 Juli 2026 • 08:00 WIB',

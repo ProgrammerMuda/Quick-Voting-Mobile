@@ -106,7 +106,11 @@ export default function PollDetailView({
               <PollQuestion
                 key={q.id}
                 index={idx}
-                question={q}
+                question={{
+                  ...q,
+                  votingCategory: q.votingCategory || selectedPoll.votingCategory,
+                  mechanism: q.mechanism || selectedPoll.mechanism,
+                }}
                 answer={displayAnswers[q.id]}
                 onAnswerChange={onAnswerChange}
                 hasError={false}
@@ -120,7 +124,11 @@ export default function PollDetailView({
             <PollQuestion
               key={currentQuestion.id}
               index={currentStep}
-              question={currentQuestion}
+              question={{
+                ...currentQuestion,
+                votingCategory: currentQuestion.votingCategory || selectedPoll.votingCategory,
+                mechanism: currentQuestion.mechanism || selectedPoll.mechanism,
+              }}
               answer={displayAnswers[currentQuestion.id]}
               onAnswerChange={onAnswerChange}
               hasError={Boolean(errors[currentQuestion.id])}

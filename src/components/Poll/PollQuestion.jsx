@@ -144,18 +144,20 @@ export default function PollQuestion({
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <ChartBar size={16} color="#3b82f6" weight="bold" />
                 <Typography variant="caption" sx={{ fontWeight: 600, color: prelineColors.slate[700], fontSize: '0.775rem' }}>
-                  Live Vote Results ({totalVotes} Votes)
+                  {question.votingCategory === 'KEPEMILIKAN' || question.mechanism === 'NPP'
+                    ? `Live Vote Results by NPP Weight (${totalVotes} Units)`
+                    : `Live Vote Results (${totalVotes} Votes)`}
                 </Typography>
               </Box>
               <Chip
-                label="Live Count"
+                label={question.votingCategory === 'KEPEMILIKAN' || question.mechanism === 'NPP' ? "NPP Weighted" : "1 Man 1 Vote"}
                 size="small"
                 sx={{
                   height: 20,
                   fontSize: '0.625rem',
                   fontWeight: 600,
-                  backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                  color: '#2563eb',
+                  backgroundColor: question.votingCategory === 'KEPEMILIKAN' || question.mechanism === 'NPP' ? 'rgba(39, 178, 155, 0.1)' : 'rgba(59, 130, 246, 0.1)',
+                  color: question.votingCategory === 'KEPEMILIKAN' || question.mechanism === 'NPP' ? '#1e8f7c' : '#2563eb',
                   borderRadius: '4px',
                 }}
               />
@@ -164,6 +166,7 @@ export default function PollQuestion({
             {/* Progress Bar for each option — Animated from 0% on mount */}
             {optionsWithResults.map((opt, idx) => {
               const isUserChoice = opt.text === answerText;
+              const isNpp = question.votingCategory === 'KEPEMILIKAN' || question.mechanism === 'NPP';
               return (
                 <Box key={idx} sx={{ mb: 1.75, '&:last-child': { mb: 0 } }}>
                   <Box
@@ -199,7 +202,7 @@ export default function PollQuestion({
                         pt: 0.1,
                       }}
                     >
-                      {opt.percentage}% <span style={{ fontWeight: 400, color: prelineColors.slate[500] }}>({opt.count} votes)</span>
+                      {opt.percentage}% {isNpp ? 'NPP' : ''} <span style={{ fontWeight: 400, color: prelineColors.slate[500] }}>({opt.count} {isNpp ? 'Units' : 'votes'})</span>
                     </Typography>
                   </Box>
 
