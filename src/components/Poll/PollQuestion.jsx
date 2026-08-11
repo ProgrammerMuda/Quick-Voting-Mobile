@@ -9,7 +9,7 @@ import {
   FormHelperText,
   LinearProgress,
 } from '@mui/material';
-import { CheckCircle, ChartBar, Key, Buildings, House, Lightning } from '@phosphor-icons/react';
+import { CheckCircle, ChartBar, Key, Buildings, House, CheckSquare } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
 
 /**
@@ -94,7 +94,7 @@ export default function PollQuestion({
       {/* Question Type Badge Header & Tenant Unit NPP Info */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
         <Chip
-          icon={<Lightning size={17} color="#27b29b" weight="fill" />}
+          icon={<CheckSquare size={17} color="#27b29b" weight="bold" />}
           label={
             isNppCategory
               ? 'Kepemilikan (NPP)'
