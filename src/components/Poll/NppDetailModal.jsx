@@ -153,20 +153,20 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
                     <House size={18} color="#27b29b" weight="fill" />
                   </Box>
                   <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: prelineColors.slate[800], fontSize: '0.85rem' }}>
-                      Unit No. {u.unitNo}
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: prelineColors.slate[800], fontSize: '0.925rem' }}>
+                      Unit {u.unitNo}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontSize: '0.725rem' }}>
+                    <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontSize: '0.775rem' }}>
                       {u.tower} • {u.floor}
                     </Typography>
                   </Box>
                 </Box>
 
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#27b29b', fontSize: '0.825rem' }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#27b29b', fontSize: '0.9rem' }}>
                     {u.npp}% NPP
                   </Typography>
-                  <Typography variant="caption" sx={{ display: 'block', color: prelineColors.slate[400], fontSize: '0.675rem' }}>
+                  <Typography variant="caption" sx={{ display: 'block', color: prelineColors.slate[400], fontSize: '0.725rem' }}>
                     Voting Weight
                   </Typography>
                 </Box>
