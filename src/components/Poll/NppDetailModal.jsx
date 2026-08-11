@@ -163,7 +163,7 @@ export default function NppDetailModal({ open, onClose, userUnit }) {
                 </Box>
 
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#1e8f7c', fontSize: '0.825rem' }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#27b29b', fontSize: '0.825rem' }}>
                     {u.npp}% NPP
                   </Typography>
                   <Typography variant="caption" sx={{ display: 'block', color: prelineColors.slate[400], fontSize: '0.675rem' }}>
