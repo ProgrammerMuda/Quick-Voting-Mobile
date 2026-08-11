@@ -92,7 +92,7 @@ export default function PollQuestion({
       }}
     >
       {/* Question Type Badge Header & Tenant Unit NPP Info */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
         <Chip
           icon={
             isNppCategory ? (
