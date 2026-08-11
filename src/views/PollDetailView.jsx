@@ -83,20 +83,19 @@ export default function PollDetailView({
               sx={{
                 p: 1.5,
                 mb: 2.5,
-                backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                backgroundColor: '#059669',
                 borderRadius: '12px',
-                border: '1px solid rgba(16, 185, 129, 0.2)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1.25,
               }}
             >
-              <CheckCircle size={22} color="#059669" weight="fill" />
+              <CheckCircle size={22} color="#ffffff" weight="fill" />
               <Box>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: '#047857', fontSize: '0.85rem' }}>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: '#ffffff', fontSize: '0.85rem' }}>
                   Vote Recorded
                 </Typography>
-                <Typography variant="caption" sx={{ color: prelineColors.slate[600], fontSize: '0.75rem' }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.75rem' }}>
                   Your answers have been submitted and cannot be changed.
                 </Typography>
               </Box>
