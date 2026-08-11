@@ -96,11 +96,11 @@ export default function PollQuestion({
         <Chip
           icon={
             isNppCategory ? (
-              <Key size={14} color="#1e8f7c" weight="fill" />
+              <Key size={14} color="#27b29b" weight="fill" />
             ) : isPengelolaan ? (
-              <Buildings size={14} color="#2563eb" weight="fill" />
+              <Buildings size={14} color="#27b29b" weight="fill" />
             ) : (
-              <House size={14} color="#7c3aed" weight="fill" />
+              <House size={14} color="#27b29b" weight="fill" />
             )
           }
           label={
@@ -112,21 +112,15 @@ export default function PollQuestion({
           }
           size="small"
           sx={{
-            height: 22,
-            fontSize: '0.675rem',
+            height: 24,
+            fontSize: '0.725rem',
             fontWeight: 600,
-            backgroundColor: isNppCategory
-              ? 'rgba(39, 178, 155, 0.08)'
-              : isPengelolaan
-              ? 'rgba(59, 130, 246, 0.08)'
-              : 'rgba(139, 92, 246, 0.08)',
-            color: isNppCategory
-              ? '#1e8f7c'
-              : isPengelolaan
-              ? '#2563eb'
-              : '#7c3aed',
+            backgroundColor: prelineColors.slate[100],
+            color: prelineColors.slate[800],
+            border: `1px solid ${prelineColors.slate[200]}`,
             borderRadius: '100px',
             px: 0.5,
+            '& .MuiChip-label': { px: 0.75 },
           }}
         />
 
