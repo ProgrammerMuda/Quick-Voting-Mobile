@@ -9,7 +9,7 @@ import {
   FormHelperText,
   LinearProgress,
 } from '@mui/material';
-import { CheckCircle, ChartBar } from '@phosphor-icons/react';
+import { CheckCircle, ChartBar, Key, Buildings, House } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
 
 /**
@@ -75,6 +75,9 @@ export default function PollQuestion({
   // Compute live vote count breakdown for read-only recorded view
   const { totalVotes, optionsWithResults } = getQuestionResults(question);
 
+  const isNppCategory = question.votingCategory === 'KEPEMILIKAN' || question.mechanism === 'NPP';
+  const isPengelolaan = question.votingCategory === 'PENGELOLAAN';
+
   return (
     <Box
       id={`question-box-${question.id}`}
@@ -88,6 +91,46 @@ export default function PollQuestion({
         transition: 'all 0.2s ease',
       }}
     >
+      {/* Question Type Badge Header */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.25 }}>
+        <Chip
+          icon={
+            isNppCategory ? (
+              <Key size={14} color="#1e8f7c" weight="fill" />
+            ) : isPengelolaan ? (
+              <Buildings size={14} color="#2563eb" weight="fill" />
+            ) : (
+              <House size={14} color="#7c3aed" weight="fill" />
+            )
+          }
+          label={
+            isNppCategory
+              ? 'Kepemilikan (NPP)'
+              : isPengelolaan
+              ? 'Pengelolaan (1 Man 1 Vote)'
+              : 'Penghunian (1 Man 1 Vote)'
+          }
+          size="small"
+          sx={{
+            height: 22,
+            fontSize: '0.675rem',
+            fontWeight: 600,
+            backgroundColor: isNppCategory
+              ? 'rgba(39, 178, 155, 0.08)'
+              : isPengelolaan
+              ? 'rgba(59, 130, 246, 0.08)'
+              : 'rgba(139, 92, 246, 0.08)',
+            color: isNppCategory
+              ? '#1e8f7c'
+              : isPengelolaan
+              ? '#2563eb'
+              : '#7c3aed',
+            borderRadius: '100px',
+            px: 0.5,
+          }}
+        />
+      </Box>
+
       {/* Question Title */}
       <Typography
         variant="subtitle1"
