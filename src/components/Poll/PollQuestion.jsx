@@ -98,13 +98,12 @@ export default function PollQuestion({
         <Chip
           label={
             isNppCategory
-              ? 'Ownership (NPP)'
+              ? 'Kepemilikan (NPP)'
               : isPengelolaan
-              ? 'Management (1 Man 1 Vote)'
-              : 'Residency (1 Man 1 Vote)'
+              ? 'Pengelolaan (1 Man 1 Vote)'
+              : 'Penghunian (1 Man 1 Vote)'
           }
           size="small"
-          onClick={isNppCategory ? () => setShowNppModal(true) : undefined}
           sx={{
             height: 26,
             fontSize: '0.775rem',
@@ -114,15 +113,7 @@ export default function PollQuestion({
             border: `1px solid ${prelineColors.slate[200]}`,
             borderRadius: '100px',
             px: 0.5,
-            cursor: isNppCategory ? 'pointer' : 'default',
-            userSelect: 'none',
             '& .MuiChip-label': { px: 1 },
-            '&:active': isNppCategory
-              ? {
-                  transform: 'scale(0.96)',
-                  backgroundColor: prelineColors.slate[200],
-                }
-              : undefined,
           }}
         />
 
