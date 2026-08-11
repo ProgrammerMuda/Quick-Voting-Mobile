@@ -145,7 +145,7 @@ export default function PollQuestion({
             }}
           >
             <Typography variant="caption" sx={{ fontWeight: 600, color: prelineColors.slate[700], fontSize: '0.7rem' }}>
-              {question.userUnit?.unitNo ? `Unit ${question.userUnit.unitNo}` : 'Unit A0101'} ({question.userUnit?.totalUnits || 1} Unit)
+              {question.userUnit?.totalUnits || 1} Unit
             </Typography>
             <Typography variant="caption" sx={{ color: prelineColors.slate[400], fontSize: '0.65rem' }}>
               •
