@@ -1,4 +1,4 @@
-import { MOCK_VOTING_ITEMS } from '../mock/votingData';
+import { MOCK_VOTING_ITEMS, DEFAULT_USER_UNITS } from '../mock/votingData';
 
 export class VotingModel {
   /**
@@ -31,6 +31,110 @@ export class VotingModel {
     };
 
     return filtered.sort((a, b) => getStatusPriority(a.status) - getStatusPriority(b.status));
+  }
+
+  /**
+   * Get units list from a poll object.
+   */
+  static getUnitsList(poll) {
+    if (!poll) return DEFAULT_USER_UNITS;
+    return poll.userUnit?.unitsList || DEFAULT_USER_UNITS;
+  }
+
+  /**
+   * Calculate summary of unit representations (Owner vs Tenant).
+   */
+  static getRepresentationSummary(unitsList) {
+    const list = unitsList && Array.isArray(unitsList) ? unitsList : DEFAULT_USER_UNITS;
+    const totalUnits = list.length;
+    const ownerUnitsList = list.filter((u) => u.representedBy === 'OWNER');
+    const tenantUnitsList = list.filter((u) => u.representedBy === 'TENANT');
+
+    const ownerUnits = ownerUnitsList.length;
+    const tenantUnits = tenantUnitsList.length;
+
+    const ownerNpp = ownerUnitsList.reduce((acc, u) => acc + (parseFloat(u.npp) || 0), 0);
+    const tenantNpp = tenantUnitsList.reduce((acc, u) => acc + (parseFloat(u.npp) || 0), 0);
+    const totalNpp = list.reduce((acc, u) => acc + (parseFloat(u.npp) || 0), 0);
+
+    return {
+      totalUnits,
+      ownerUnits,
+      tenantUnits,
+      ownerUnitsList,
+      tenantUnitsList,
+      ownerNpp: parseFloat(ownerNpp.toFixed(2)),
+      tenantNpp: parseFloat(tenantNpp.toFixed(2)),
+      totalNpp: parseFloat(totalNpp.toFixed(2)),
+    };
+  }
+
+  /**
+   * Update representation for a single unit within a poll.
+   */
+  static updateUnitRepresentation(items, pollId, unitNo, representedBy) {
+    return items.map((item) => {
+      if (item.id === pollId) {
+        const currentUnits = item.userUnit?.unitsList || DEFAULT_USER_UNITS;
+        const updatedUnits = currentUnits.map((u) =>
+          u.unitNo === unitNo ? { ...u, representedBy } : u
+        );
+
+        return {
+          ...item,
+          userUnit: {
+            ...item.userUnit,
+            unitsList: updatedUnits,
+          },
+        };
+      }
+      return item;
+    });
+  }
+
+  /**
+   * Update all units representation simultaneously (bulk 'OWNER' or 'TENANT').
+   */
+  static updateAllUnitsRepresentation(items, pollId, representedBy) {
+    return items.map((item) => {
+      if (item.id === pollId) {
+        const currentUnits = item.userUnit?.unitsList || DEFAULT_USER_UNITS;
+        const updatedUnits = currentUnits.map((u) => {
+          const isSelf = u.tenant?.relationType === 'SELF';
+          return {
+            ...u,
+            representedBy: isSelf ? 'OWNER' : representedBy,
+          };
+        });
+
+        return {
+          ...item,
+          userUnit: {
+            ...item.userUnit,
+            unitsList: updatedUnits,
+          },
+        };
+      }
+      return item;
+    });
+  }
+
+  /**
+   * Batch update all units for a poll with a new units array.
+   */
+  static setUnitsListForPoll(items, pollId, newUnitsList) {
+    return items.map((item) => {
+      if (item.id === pollId) {
+        return {
+          ...item,
+          userUnit: {
+            ...item.userUnit,
+            unitsList: newUnitsList,
+          },
+        };
+      }
+      return item;
+    });
   }
 
   /**

@@ -1,14 +1,15 @@
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import { CheckCircle, CalendarBlank } from '@phosphor-icons/react';
+import { Box, Typography, Button, Snackbar, Alert } from '@mui/material';
+import { CheckCircle, CalendarBlank, User, Users, ArrowsLeftRight, Info } from '@phosphor-icons/react';
 import PollHeader from '../components/Poll/PollHeader';
 import PollQuestion from '../components/Poll/PollQuestion';
 import StepNavigator from '../components/Poll/StepNavigator';
 import QuestionEmptyState from '../components/Poll/QuestionEmptyState';
 import VoteConfirmModal from '../components/Poll/VoteConfirmModal';
-import { prelineColors } from '../theme/theme';
-
 import VoteSuccessModal from '../components/Poll/VoteSuccessModal';
+import UnitDelegationModal from '../components/Poll/UnitDelegationModal';
+import { prelineColors } from '../theme/theme';
+import { VotingModel } from '../models/VotingModel';
 
 export default function PollDetailView({
   selectedPoll,
@@ -23,6 +24,8 @@ export default function PollDetailView({
   errors,
   showConfirmModal,
   showSuccessModal,
+  showDelegationModal,
+  delegationToast,
   onBack,
   onAnswerChange,
   onNextStep,
@@ -31,6 +34,12 @@ export default function PollDetailView({
   onCloseModal,
   onCloseSuccessModal,
   onCloseSuccessAndGoList,
+  onOpenDelegationModal,
+  onCloseDelegationModal,
+  onToggleUnitInline,
+  onSetModeInline,
+  onSaveRepresentation,
+  onCloseDelegationToast,
 }) {
   const isScheduled = (selectedPoll.status || '').toLowerCase() === 'scheduled' || (selectedPoll.status || '').toLowerCase() === 'upcoming';
   const isReadOnlyStatus = selectedPoll.status !== 'ongoing' && selectedPoll.status !== 'OPEN';
@@ -38,6 +47,9 @@ export default function PollDetailView({
   const isCompletedView = (!isScheduled && isReadOnlyStatus) || isAllAnswered;
   const hasQuestions = activeQuestions.length > 0;
   const showEmptyState = isScheduled || !hasQuestions;
+
+  const unitsList = VotingModel.getUnitsList(selectedPoll);
+  const summary = VotingModel.getRepresentationSummary(unitsList);
 
   // Default fallback answers for completed polls if userAnswers not set
   const defaultAnswersForCompleted = {};
@@ -58,8 +70,14 @@ export default function PollDetailView({
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', flex: 1, minHeight: 0, position: 'relative', overflow: 'hidden' }}>
-      {/* Poll Header */}
-      <PollHeader poll={selectedPoll} onBack={onBack} />
+      {/* Poll Header with Tenant / Owner Switcher */}
+      <PollHeader
+        poll={selectedPoll}
+        onBack={onBack}
+        onToggleUnitInline={onToggleUnitInline}
+        onSetModeInline={onSetModeInline}
+        onOpenDelegationModal={onOpenDelegationModal}
+      />
 
       {/* Question Body */}
       <Box
@@ -96,7 +114,7 @@ export default function PollDetailView({
                   Vote Recorded
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.75rem' }}>
-                  Your answers have been submitted and cannot be changed.
+                  Your vote ({summary.ownerUnits} Owner {summary.ownerUnits > 1 ? 'Units' : 'Unit'}, {summary.ownerNpp}% NPP) has been recorded.
                 </Typography>
               </Box>
             </Box>
@@ -209,6 +227,40 @@ export default function PollDetailView({
         onViewResults={onCloseSuccessModal}
         poll={selectedPoll}
       />
+
+      {/* Unit & Tenant Delegation Bottom Sheet Modal */}
+      <UnitDelegationModal
+        open={Boolean(showDelegationModal)}
+        onClose={onCloseDelegationModal}
+        poll={selectedPoll}
+        onSaveRepresentation={onSaveRepresentation}
+      />
+
+      {/* Toast Feedback Notification */}
+      <Snackbar
+        open={Boolean(delegationToast)}
+        autoHideDuration={3000}
+        onClose={onCloseDelegationToast}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{ bottom: { xs: 80, sm: 80 } }}
+      >
+        <Alert
+          onClose={onCloseDelegationToast}
+          severity="success"
+          variant="filled"
+          icon={<CheckCircle size={20} weight="fill" />}
+          sx={{
+            width: '100%',
+            backgroundColor: '#059669',
+            color: '#ffffff',
+            fontWeight: 600,
+            borderRadius: '10px',
+            boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
+          }}
+        >
+          {delegationToast}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

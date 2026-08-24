@@ -29,6 +29,12 @@ export function useVotingController() {
   // Success bottom sheet modal state
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  // Unit delegation bottom sheet modal state
+  const [showDelegationModal, setShowDelegationModal] = useState(false);
+
+  // Toast feedback state
+  const [delegationToast, setDelegationToast] = useState(null);
+
   // Derived filtered items via Model
   const filteredItems = VotingModel.filterItems(votingItems, filter);
 
@@ -153,6 +159,62 @@ export function useVotingController() {
     handleBackToList();
   };
 
+  // Delegation Handlers
+  const handleOpenDelegationModal = () => {
+    setShowDelegationModal(true);
+  };
+
+  const handleCloseDelegationModal = () => {
+    setShowDelegationModal(false);
+  };
+
+  // Instant inline toggle per unit (Zero modal, 100% frictionless)
+  const handleToggleUnitInline = (unitNo, representedBy) => {
+    if (!selectedPoll) return;
+    const currentUnits = VotingModel.getUnitsList(selectedPoll);
+    const updatedUnits = currentUnits.map((u) => {
+      if (u.unitNo === unitNo) {
+        if (u.tenant?.relationType === 'SELF') {
+          return { ...u, representedBy: 'OWNER' };
+        }
+        return { ...u, representedBy };
+      }
+      return u;
+    });
+
+    const updatedItems = VotingModel.setUnitsListForPoll(votingItems, selectedPoll.id, updatedUnits);
+    setVotingItems(updatedItems);
+
+    const updatedPoll = updatedItems.find((i) => i.id === selectedPoll.id);
+    setSelectedPoll(updatedPoll || selectedPoll);
+  };
+
+  // Instant quick mode switcher (ALL_OWNER or ALL_DELEGATED)
+  const handleSetModeInline = (mode) => {
+    if (!selectedPoll) return;
+    const targetRep = mode === 'ALL_OWNER' ? 'OWNER' : 'TENANT';
+    const updatedItems = VotingModel.updateAllUnitsRepresentation(votingItems, selectedPoll.id, targetRep);
+    setVotingItems(updatedItems);
+
+    const updatedPoll = updatedItems.find((i) => i.id === selectedPoll.id);
+    setSelectedPoll(updatedPoll || selectedPoll);
+  };
+
+  const handleSaveRepresentation = (updatedUnits) => {
+    if (!selectedPoll) return;
+    const updatedItems = VotingModel.setUnitsListForPoll(votingItems, selectedPoll.id, updatedUnits);
+    setVotingItems(updatedItems);
+
+    const updatedPoll = updatedItems.find((i) => i.id === selectedPoll.id);
+    setSelectedPoll(updatedPoll || selectedPoll);
+
+    setDelegationToast('Unit voting representation updated successfully!');
+  };
+
+  const handleCloseDelegationToast = () => {
+    setDelegationToast(null);
+  };
+
   return {
     // State Values
     screen,
@@ -170,6 +232,8 @@ export function useVotingController() {
     errors,
     showConfirmModal,
     showSuccessModal,
+    showDelegationModal,
+    delegationToast,
 
     // Action Handlers
     handleFilterChange,
@@ -182,5 +246,11 @@ export function useVotingController() {
     handleCloseModal,
     handleCloseSuccessModal,
     handleCloseSuccessAndGoList,
+    handleOpenDelegationModal,
+    handleCloseDelegationModal,
+    handleToggleUnitInline,
+    handleSetModeInline,
+    handleSaveRepresentation,
+    handleCloseDelegationToast,
   };
 }
