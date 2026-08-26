@@ -14,6 +14,7 @@ export const DEFAULT_USER_UNITS = [
       status: 'Owner & Resident',
     },
     representedBy: 'OWNER',
+    hasVoted: false,
   },
   {
     id: 'unit-2',
@@ -29,7 +30,10 @@ export const DEFAULT_USER_UNITS = [
       roleLabel: 'Tenant Member • Anak',
       status: 'Resident',
     },
-    representedBy: 'OWNER',
+    representedBy: 'TENANT',
+    hasVoted: true,
+    votedBy: 'Nadia Pratama',
+    votedAt: '24 Aug 2026, 14:30',
   },
   {
     id: 'unit-3',
@@ -46,6 +50,7 @@ export const DEFAULT_USER_UNITS = [
       status: 'Resident',
     },
     representedBy: 'OWNER',
+    hasVoted: false,
   },
   {
     id: 'unit-4',
@@ -62,6 +67,7 @@ export const DEFAULT_USER_UNITS = [
       status: 'Resident',
     },
     representedBy: 'OWNER',
+    hasVoted: false,
   },
   {
     id: 'unit-5',
@@ -78,6 +84,7 @@ export const DEFAULT_USER_UNITS = [
       status: 'Resident',
     },
     representedBy: 'OWNER',
+    hasVoted: false,
   },
 ];
 

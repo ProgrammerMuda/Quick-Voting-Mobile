@@ -19,6 +19,7 @@ import {
   Briefcase,
   Key,
   CheckCircle,
+  Lock,
 } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
 import { VotingModel } from '../../models/VotingModel';
@@ -70,11 +71,13 @@ export default function UnitDelegationModal({
     }
   }, [open, poll]);
 
-  // Toggle single unit representation (except self-occupied which is locked to Owner)
+  // Toggle single unit representation (except self-occupied or already submitted/voted units)
   const handleToggleUnit = (unitNo, representedBy) => {
     setLocalUnits((prev) =>
       prev.map((u) => {
         if (u.unitNo === unitNo) {
+          // LOCK VALIDATION: Cannot change representation if vote is already submitted
+          if (u.hasVoted) return u;
           if (u.tenant?.relationType === 'SELF') {
             return { ...u, representedBy: 'OWNER' };
           }
@@ -85,18 +88,23 @@ export default function UnitDelegationModal({
     );
   };
 
-  // Bulk set all to Owner
+  // Bulk set all to Owner (skipping already voted units)
   const handleSetAllOwner = () => {
-    setLocalUnits((prev) => prev.map((u) => ({ ...u, representedBy: 'OWNER' })));
+    setLocalUnits((prev) =>
+      prev.map((u) => (u.hasVoted ? u : { ...u, representedBy: 'OWNER' }))
+    );
   };
 
-  // Bulk set all to Tenant (except self-occupied units)
+  // Bulk set all to Tenant (skipping already voted or self-occupied units)
   const handleSetAllTenant = () => {
     setLocalUnits((prev) =>
-      prev.map((u) => ({
-        ...u,
-        representedBy: u.tenant?.relationType === 'SELF' ? 'OWNER' : 'TENANT',
-      }))
+      prev.map((u) => {
+        if (u.hasVoted) return u;
+        return {
+          ...u,
+          representedBy: u.tenant?.relationType === 'SELF' ? 'OWNER' : 'TENANT',
+        };
+      })
     );
   };
 
@@ -386,6 +394,7 @@ export default function UnitDelegationModal({
               {localUnits.map((u, idx) => {
                 const isOwner = u.representedBy === 'OWNER';
                 const isSelfOccupied = u.tenant?.relationType === 'SELF';
+                const isVoted = Boolean(u.hasVoted);
                 const residentBadge = getResidentBadge(u.tenant);
                 const shortName = u.tenant?.name ? u.tenant.name.split(' ')[0] : 'Resident';
 
@@ -396,12 +405,19 @@ export default function UnitDelegationModal({
                       p: 1.75,
                       borderRadius: '16px',
                       backgroundColor: '#ffffff',
-                      border: `1.5px solid ${isOwner ? 'rgba(39, 178, 155, 0.35)' : 'rgba(59, 130, 246, 0.35)'}`,
+                      border: `1.5px solid ${
+                        isVoted
+                          ? prelineColors.slate[300]
+                          : isOwner
+                          ? 'rgba(39, 178, 155, 0.35)'
+                          : 'rgba(59, 130, 246, 0.35)'
+                      }`,
                       boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: 1.25,
                       transition: 'all 0.2s ease',
+                      opacity: isVoted ? 0.95 : 1,
                     }}
                   >
                     {/* Unit Info Row */}
@@ -418,14 +434,24 @@ export default function UnitDelegationModal({
                             width: 34,
                             height: 34,
                             borderRadius: '10px',
-                            backgroundColor: isOwner ? 'rgba(39, 178, 155, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                            border: `1px solid ${isOwner ? 'rgba(39, 178, 155, 0.25)' : 'rgba(59, 130, 246, 0.25)'}`,
+                            backgroundColor: isVoted
+                              ? prelineColors.slate[100]
+                              : isOwner
+                              ? 'rgba(39, 178, 155, 0.1)'
+                              : 'rgba(59, 130, 246, 0.1)',
+                            border: `1px solid ${
+                              isVoted
+                                ? prelineColors.slate[300]
+                                : isOwner
+                                ? 'rgba(39, 178, 155, 0.25)'
+                                : 'rgba(59, 130, 246, 0.25)'
+                            }`,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                           }}
                         >
-                          <HouseLine size={18} color={isOwner ? '#0d9488' : '#2563eb'} weight="fill" />
+                          <HouseLine size={18} color={isVoted ? prelineColors.slate[600] : isOwner ? '#0d9488' : '#2563eb'} weight="fill" />
                         </Box>
                         <Box>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
@@ -446,8 +472,13 @@ export default function UnitDelegationModal({
                                 height: 18,
                                 fontSize: '0.65rem',
                                 fontWeight: 600,
-                                backgroundColor: isOwner ? 'rgba(39, 178, 155, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                                color: isOwner ? '#0d9488' : '#2563eb',
+                                backgroundColor: isVoted
+                                  ? prelineColors.slate[100]
+                                  : isOwner
+                                  ? 'rgba(39, 178, 155, 0.1)'
+                                  : 'rgba(59, 130, 246, 0.1)',
+                                color: isVoted ? prelineColors.slate[600] : isOwner ? '#0d9488' : '#2563eb',
+                                border: isVoted ? `1px solid ${prelineColors.slate[200]}` : 'none',
                               }}
                             />
                           </Box>
@@ -461,26 +492,43 @@ export default function UnitDelegationModal({
                       </Box>
 
                       {/* Current Status Pill */}
-                      <Chip
-                        icon={
-                          isOwner ? (
-                            <User size={13} color="#0d9488" weight="bold" />
-                          ) : (
-                            <Users size={13} color="#2563eb" weight="bold" />
-                          )
-                        }
-                        label={isOwner ? 'Owner Vote' : 'Resident Vote'}
-                        size="small"
-                        sx={{
-                          height: 22,
-                          fontSize: '0.675rem',
-                          fontWeight: 600,
-                          backgroundColor: isOwner ? 'rgba(39, 178, 155, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                          color: isOwner ? '#0d9488' : '#2563eb',
-                          border: `1px solid ${isOwner ? 'rgba(39, 178, 155, 0.25)' : 'rgba(59, 130, 246, 0.25)'}`,
-                          '& .MuiChip-label': { px: 0.75 },
-                        }}
-                      />
+                      {isVoted ? (
+                        <Chip
+                          icon={<Lock size={12} weight="bold" color={prelineColors.slate[600]} />}
+                          label="Vote Submitted (Locked)"
+                          size="small"
+                          sx={{
+                            height: 22,
+                            fontSize: '0.675rem',
+                            fontWeight: 700,
+                            backgroundColor: prelineColors.slate[100],
+                            color: prelineColors.slate[700],
+                            border: `1px solid ${prelineColors.slate[300]}`,
+                            '& .MuiChip-label': { px: 0.75 },
+                          }}
+                        />
+                      ) : (
+                        <Chip
+                          icon={
+                            isOwner ? (
+                              <User size={13} color="#0d9488" weight="bold" />
+                            ) : (
+                              <Users size={13} color="#2563eb" weight="bold" />
+                            )
+                          }
+                          label={isOwner ? 'Owner Vote' : 'Resident Vote'}
+                          size="small"
+                          sx={{
+                            height: 22,
+                            fontSize: '0.675rem',
+                            fontWeight: 600,
+                            backgroundColor: isOwner ? 'rgba(39, 178, 155, 0.1)' : 'rgba(59, 130, 246, 0.1)',
+                            color: isOwner ? '#0d9488' : '#2563eb',
+                            border: `1px solid ${isOwner ? 'rgba(39, 178, 155, 0.25)' : 'rgba(59, 130, 246, 0.25)'}`,
+                            '& .MuiChip-label': { px: 0.75 },
+                          }}
+                        />
+                      )}
                     </Box>
 
                     {/* Voter Representative Box */}
@@ -499,7 +547,6 @@ export default function UnitDelegationModal({
                             border: 'rgba(16, 185, 129, 0.25)',
                           }
                         : residentBadge;
-                      const voterInitial = isOwner ? 'R' : u.tenant.name.charAt(0);
 
                       return (
                         <Box
@@ -551,25 +598,46 @@ export default function UnitDelegationModal({
                       );
                     })()}
 
-                    {/* CASE 1: SELF-OCCUPIED UNIT */}
-                    {isSelfOccupied ? (
-                      <Typography
-                        variant="caption"
+                    {/* CASE 1: UNIT HAS ALREADY SUBMITTED VOTE (LOCKED VALIDATION) */}
+                    {isVoted ? (
+                      <Box
                         sx={{
-                          color: '#059669',
-                          fontSize: '0.725rem',
-                          fontWeight: 600,
+                          p: 1.25,
+                          borderRadius: '10px',
+                          backgroundColor: prelineColors.slate[100],
+                          border: `1px solid ${prelineColors.slate[200]}`,
                           display: 'flex',
-                          alignItems: 'center',
-                          gap: 0.5,
-                          px: 0.5,
+                          alignItems: 'flex-start',
+                          gap: 1,
                         }}
                       >
-                        <CheckCircle size={14} color="#059669" weight="fill" />
-                        Automatically voted by you as owner and resident.
-                      </Typography>
+                        <Lock size={16} color="#64748b" weight="bold" style={{ flexShrink: 0, marginTop: 1 }} />
+                        <Box>
+                          <Typography variant="caption" sx={{ color: prelineColors.slate[800], fontWeight: 700, fontSize: '0.75rem', display: 'block', mb: 0.25 }}>
+                            Vote Submitted & Locked
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: prelineColors.slate[600], fontSize: '0.7rem', lineHeight: 1.35 }}>
+                            Vote has already been submitted for this unit{u.votedBy ? ` by ${u.votedBy}` : ''}{u.votedAt ? ` (${u.votedAt})` : ''}. Delegation cannot be changed to prevent double voting.
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ) : isSelfOccupied ? (
+                      /* CASE 2: SELF-OCCUPIED UNIT */
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, px: 0.5 }}>
+                        <HouseLine size={15} color="#059669" weight="fill" style={{ flexShrink: 0 }} />
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: '#059669',
+                            fontSize: '0.725rem',
+                            fontWeight: 600,
+                          }}
+                        >
+                          Automatically voted by you as owner and resident.
+                        </Typography>
+                      </Box>
                     ) : (
-                      /* CASE 2: DELEGABLE UNITS */
+                      /* CASE 3: DELEGABLE UNITS (NOT YET VOTED) */
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                         <Box
                           sx={{
@@ -653,19 +721,25 @@ export default function UnitDelegationModal({
                           </Box>
                         </Box>
 
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: isOwner ? '#0d9488' : '#2563eb',
-                            fontSize: '0.7rem',
-                            fontWeight: 500,
-                            px: 0.5,
-                          }}
-                        >
-                          {isOwner
-                            ? `✓ Vote will be cast by Rian Pratama (Owner).`
-                            : `✓ Vote will be cast by ${u.tenant.name} (${residentBadge ? residentBadge.label : 'Resident'}).`}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, px: 0.5 }}>
+                          {isOwner ? (
+                            <User size={14} color="#0d9488" weight="fill" style={{ flexShrink: 0 }} />
+                          ) : (
+                            <Users size={14} color="#2563eb" weight="fill" style={{ flexShrink: 0 }} />
+                          )}
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: isOwner ? '#0d9488' : '#2563eb',
+                              fontSize: '0.7rem',
+                              fontWeight: 600,
+                            }}
+                          >
+                            {isOwner
+                              ? 'Vote will be cast by Rian Pratama (Owner).'
+                              : `Vote will be cast by ${u.tenant.name} (${residentBadge ? residentBadge.label : 'Resident'}).`}
+                          </Typography>
+                        </Box>
                       </Box>
                     )}
                   </Box>
@@ -677,15 +751,15 @@ export default function UnitDelegationModal({
             <Box
               sx={{
                 p: 1.5,
-                backgroundColor: 'rgba(59, 130, 246, 0.06)',
-                border: '1px solid rgba(59, 130, 246, 0.18)',
+                backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                border: '1px solid rgba(59, 130, 246, 0.15)',
                 borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: 1.25,
               }}
             >
-              <ShieldCheck size={22} color="#2563eb" weight="fill" style={{ flexShrink: 0, marginTop: 1 }} />
+              <ShieldCheck size={20} color="#2563eb" weight="fill" style={{ flexShrink: 0, marginTop: 1 }} />
               <Box>
                 <Typography
                   variant="caption"
@@ -694,16 +768,20 @@ export default function UnitDelegationModal({
                     color: '#1e40af',
                     fontSize: '0.75rem',
                     display: 'block',
-                    mb: 0.25,
+                    mb: 0.4,
                   }}
                 >
                   Voting Rights Rule: 1 Unit = 1 Representative
                 </Typography>
                 <Typography
                   variant="caption"
-                  sx={{ color: '#1d4ed8', fontSize: '0.72rem', lineHeight: 1.4 }}
+                  sx={{ color: '#1d4ed8', fontSize: '0.72rem', lineHeight: 1.5 }}
                 >
-                  Self-occupied units are automatically voted by you. For other units, you can choose whether the vote is cast directly by you (Owner) or delegated to the respective resident.
+                  • <strong>Self-occupied:</strong> Voted by you as owner & resident.
+                  <br />
+                  • <strong>Delegation:</strong> Choose Owner or Resident to vote per unit.
+                  <br />
+                  • <strong>Lock Rule:</strong> Units with submitted votes cannot be changed.
                 </Typography>
               </Box>
             </Box>
