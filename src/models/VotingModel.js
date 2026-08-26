@@ -70,6 +70,14 @@ export class VotingModel {
   }
 
   /**
+   * Check if poll has delegable units (units with tenants/residents where relationType !== 'SELF').
+   */
+  static hasDelegableUnits(poll) {
+    const list = this.getUnitsList(poll);
+    return list.some((u) => u.tenant && u.tenant.relationType !== 'SELF' && !u.hasVoted);
+  }
+
+  /**
    * Update representation for a single unit within a poll.
    */
   static updateUnitRepresentation(items, pollId, unitNo, representedBy) {

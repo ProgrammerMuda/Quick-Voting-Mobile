@@ -35,6 +35,10 @@ export function useVotingController() {
   // Delegation success bottom sheet modal state
   const [showDelegationSuccessModal, setShowDelegationSuccessModal] = useState(false);
 
+  // Pre-vote awareness prompt modal state (Solution A)
+  const [showPreVotePrompt, setShowPreVotePrompt] = useState(false);
+  const [acknowledgedPolls, setAcknowledgedPolls] = useState({});
+
   // Toast feedback state
   const [delegationToast, setDelegationToast] = useState(null);
 
@@ -81,6 +85,31 @@ export function useVotingController() {
     setErrors({});
     setCurrentStep(0);
     setScreen('DETAIL');
+
+    // Trigger Pre-Vote Awareness Modal (Solution A) if poll has delegable units and not finalized/acknowledged
+    const statusLower = (poll.status || '').toLowerCase();
+    const isOngoingOrScheduled = statusLower === 'ongoing' || statusLower === 'open' || statusLower === 'scheduled' || statusLower === 'upcoming';
+    const isDelegable = VotingModel.hasDelegableUnits(poll);
+
+    if (isOngoingOrScheduled && !poll.isDelegationFinalized && isDelegable && !acknowledgedPolls[poll.id]) {
+      setShowPreVotePrompt(true);
+    }
+  };
+
+  const handleOpenDelegationFromPrompt = () => {
+    setShowPreVotePrompt(false);
+    setShowDelegationModal(true);
+  };
+
+  const handleContinueAsOwnerFromPrompt = () => {
+    if (selectedPoll) {
+      setAcknowledgedPolls((prev) => ({ ...prev, [selectedPoll.id]: true }));
+    }
+    setShowPreVotePrompt(false);
+  };
+
+  const handleClosePreVotePrompt = () => {
+    setShowPreVotePrompt(false);
   };
 
   const handleBackToList = () => {
@@ -242,6 +271,7 @@ export function useVotingController() {
     showSuccessModal,
     showDelegationModal,
     showDelegationSuccessModal,
+    showPreVotePrompt,
     delegationToast,
 
     // Action Handlers
@@ -257,6 +287,9 @@ export function useVotingController() {
     handleCloseSuccessAndGoList,
     handleOpenDelegationModal,
     handleCloseDelegationModal,
+    handleOpenDelegationFromPrompt,
+    handleContinueAsOwnerFromPrompt,
+    handleClosePreVotePrompt,
     handleToggleUnitInline,
     handleSetModeInline,
     handleSaveRepresentation,

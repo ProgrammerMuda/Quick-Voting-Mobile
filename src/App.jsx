@@ -52,6 +52,7 @@ export default function App() {
             showSuccessModal={controller.showSuccessModal}
             showDelegationModal={controller.showDelegationModal}
             showDelegationSuccessModal={controller.showDelegationSuccessModal}
+            showPreVotePrompt={controller.showPreVotePrompt}
             delegationToast={controller.delegationToast}
             onBack={controller.handleBackToList}
             onAnswerChange={controller.handleAnswerChange}
@@ -64,6 +65,9 @@ export default function App() {
             onOpenDelegationModal={controller.handleOpenDelegationModal}
             onCloseDelegationModal={controller.handleCloseDelegationModal}
             onCloseDelegationSuccessModal={controller.handleCloseDelegationSuccessModal}
+            onOpenDelegationFromPrompt={controller.handleOpenDelegationFromPrompt}
+            onContinueAsOwnerFromPrompt={controller.handleContinueAsOwnerFromPrompt}
+            onClosePreVotePrompt={controller.handleClosePreVotePrompt}
             onToggleUnitInline={controller.handleToggleUnitInline}
             onSetModeInline={controller.handleSetModeInline}
             onSaveRepresentation={controller.handleSaveRepresentation}

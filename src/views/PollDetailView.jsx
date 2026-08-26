@@ -9,6 +9,7 @@ import VoteConfirmModal from '../components/Poll/VoteConfirmModal';
 import VoteSuccessModal from '../components/Poll/VoteSuccessModal';
 import UnitDelegationModal from '../components/Poll/UnitDelegationModal';
 import DelegationSuccessModal from '../components/Poll/DelegationSuccessModal';
+import PreVoteAwarenessModal from '../components/Poll/PreVoteAwarenessModal';
 import { prelineColors } from '../theme/theme';
 import { VotingModel } from '../models/VotingModel';
 
@@ -27,6 +28,7 @@ export default function PollDetailView({
   showSuccessModal,
   showDelegationModal,
   showDelegationSuccessModal,
+  showPreVotePrompt,
   delegationToast,
   onBack,
   onAnswerChange,
@@ -39,6 +41,9 @@ export default function PollDetailView({
   onOpenDelegationModal,
   onCloseDelegationModal,
   onCloseDelegationSuccessModal,
+  onOpenDelegationFromPrompt,
+  onContinueAsOwnerFromPrompt,
+  onClosePreVotePrompt,
   onToggleUnitInline,
   onSetModeInline,
   onSaveRepresentation,
@@ -237,6 +242,15 @@ export default function PollDetailView({
         onClose={onCloseDelegationModal}
         poll={selectedPoll}
         onSaveRepresentation={onSaveRepresentation}
+      />
+
+      {/* Pre-Vote Awareness Dialog Modal (Solution A) */}
+      <PreVoteAwarenessModal
+        open={Boolean(showPreVotePrompt)}
+        onClose={onClosePreVotePrompt}
+        onOpenDelegation={onOpenDelegationFromPrompt}
+        onContinueAsOwner={onContinueAsOwnerFromPrompt}
+        poll={selectedPoll}
       />
 
       {/* Delegation Success Bottom Sheet Modal (Matching user illustration design) */}

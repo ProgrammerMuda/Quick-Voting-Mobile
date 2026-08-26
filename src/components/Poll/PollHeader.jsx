@@ -27,11 +27,15 @@ export default function PollHeader({
 }) {
   if (!poll) return null;
   const isEvent = poll.itemType === 'EVENT';
+  const statusLower = (poll.status || '').toLowerCase();
+  const isClosed = statusLower === 'closed' || statusLower === 'ended' || statusLower === 'cancelled' || statusLower === 'complete';
+  // Delegation is available starting from scheduled / upcoming status up through ongoing / open status
+  const canManageDelegation = !isClosed;
+  const isReadOnly = !canManageDelegation;
+  const isDelegationFinalized = Boolean(poll.isDelegationFinalized);
+
   const unitsList = VotingModel.getUnitsList(poll);
   const summary = VotingModel.getRepresentationSummary(unitsList);
-
-  const isReadOnly = poll.status !== 'ongoing' && poll.status !== 'OPEN';
-  const isDelegationFinalized = Boolean(poll.isDelegationFinalized);
 
   return (
     <Box

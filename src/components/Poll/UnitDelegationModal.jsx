@@ -338,63 +338,86 @@ export default function UnitDelegationModal({
               </Box>
             </Box>
 
-            {/* Quick Action Shortcut Buttons */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography
-                variant="caption"
-                sx={{ color: prelineColors.slate[500], fontWeight: 600, fontSize: '0.75rem' }}
-              >
-                Quick Actions:
-              </Typography>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={handleSetAllOwner}
-                startIcon={<User size={14} weight="bold" />}
+            {/* Quick Action Shortcut Buttons or Finalized Banner */}
+            {isFinalized ? (
+              <Box
                 sx={{
-                  py: 0.5,
-                  px: 1.25,
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  borderRadius: '100px',
-                  border: `1px solid ${prelineColors.slate[300]}`,
-                  color: prelineColors.slate[700],
-                  backgroundColor: '#ffffff',
-                  textTransform: 'none',
-                  '&:hover': {
-                    borderColor: '#27b29b',
-                    color: '#1e8f7c',
-                    backgroundColor: 'rgba(39, 178, 155, 0.05)',
-                  },
+                  p: 1.25,
+                  px: 1.5,
+                  backgroundColor: prelineColors.slate[100],
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  border: `1px solid ${prelineColors.slate[200]}`,
                 }}
               >
-                All Owner
-              </Button>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={handleSetAllTenant}
-                startIcon={<Users size={14} weight="bold" />}
-                sx={{
-                  py: 0.5,
-                  px: 1.25,
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  borderRadius: '100px',
-                  border: `1px solid ${prelineColors.slate[300]}`,
-                  color: prelineColors.slate[700],
-                  backgroundColor: '#ffffff',
-                  textTransform: 'none',
-                  '&:hover': {
-                    borderColor: '#2563eb',
-                    color: '#2563eb',
-                    backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                  },
-                }}
-              >
-                All Residents
-              </Button>
-            </Box>
+                <Lock size={15} color={prelineColors.slate[600]} weight="bold" />
+                <Typography
+                  variant="caption"
+                  sx={{ color: prelineColors.slate[700], fontWeight: 600, fontSize: '0.75rem' }}
+                >
+                  Voting representation is finalized for this session (Review Mode).
+                </Typography>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: prelineColors.slate[500], fontWeight: 600, fontSize: '0.75rem' }}
+                >
+                  Quick Actions:
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleSetAllOwner}
+                  startIcon={<User size={14} weight="bold" />}
+                  sx={{
+                    py: 0.5,
+                    px: 1.25,
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    borderRadius: '100px',
+                    border: `1px solid ${prelineColors.slate[300]}`,
+                    color: prelineColors.slate[700],
+                    backgroundColor: '#ffffff',
+                    textTransform: 'none',
+                    '&:hover': {
+                      borderColor: '#27b29b',
+                      color: '#1e8f7c',
+                      backgroundColor: 'rgba(39, 178, 155, 0.05)',
+                    },
+                  }}
+                >
+                  All Owner
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleSetAllTenant}
+                  startIcon={<Users size={14} weight="bold" />}
+                  sx={{
+                    py: 0.5,
+                    px: 1.25,
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    borderRadius: '100px',
+                    border: `1px solid ${prelineColors.slate[300]}`,
+                    color: prelineColors.slate[700],
+                    backgroundColor: '#ffffff',
+                    textTransform: 'none',
+                    '&:hover': {
+                      borderColor: '#2563eb',
+                      color: '#2563eb',
+                      backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                    },
+                  }}
+                >
+                  All Residents
+                </Button>
+              </Box>
+            )}
 
             {/* Unit List */}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
@@ -408,7 +431,7 @@ export default function UnitDelegationModal({
                   color: prelineColors.slate[500],
                 }}
               >
-                Select Voting Representative for Each Unit ({totalUnits} Units):
+                {isFinalized ? 'Finalized Representatives for Each Unit' : 'Select Voting Representative for Each Unit'} ({totalUnits} Units):
               </Typography>
 
               {localUnits.map((u, idx) => {
@@ -420,48 +443,57 @@ export default function UnitDelegationModal({
 
                 return (
                   <Box
-                    key={u.id || u.unitNo || idx}
+                    key={u.unitNo || idx}
                     sx={{
                       p: 1.75,
-                      borderRadius: '16px',
-                      backgroundColor: '#ffffff',
-                      border: `1.5px solid ${
+                      borderRadius: '14px',
+                      backgroundColor: isVoted
+                        ? prelineColors.slate[50]
+                        : isSelfOccupied
+                        ? 'rgba(16, 185, 129, 0.03)'
+                        : isOwner
+                        ? 'rgba(39, 178, 155, 0.03)'
+                        : 'rgba(59, 130, 246, 0.03)',
+                      border: `1px solid ${
                         isVoted
                           ? prelineColors.slate[300]
+                          : isSelfOccupied
+                          ? 'rgba(16, 185, 129, 0.25)'
                           : isOwner
-                          ? 'rgba(39, 178, 155, 0.35)'
-                          : 'rgba(59, 130, 246, 0.35)'
+                          ? 'rgba(39, 178, 155, 0.25)'
+                          : 'rgba(59, 130, 246, 0.25)'
                       }`,
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 1.25,
                       transition: 'all 0.2s ease',
-                      opacity: isVoted ? 0.95 : 1,
+                      opacity: isVoted ? 0.88 : 1,
                     }}
                   >
-                    {/* Unit Info Row */}
+                    {/* Unit Card Header: Unit No, NPP, Occupant Badge */}
                     <Box
                       sx={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        mb: 1.25,
                       }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Box
                           sx={{
-                            width: 34,
-                            height: 34,
-                            borderRadius: '10px',
+                            width: 32,
+                            height: 32,
+                            borderRadius: '8px',
                             backgroundColor: isVoted
-                              ? prelineColors.slate[100]
+                              ? prelineColors.slate[200]
+                              : isSelfOccupied
+                              ? 'rgba(16, 185, 129, 0.1)'
                               : isOwner
                               ? 'rgba(39, 178, 155, 0.1)'
                               : 'rgba(59, 130, 246, 0.1)',
                             border: `1px solid ${
                               isVoted
                                 ? prelineColors.slate[300]
+                                : isSelfOccupied
+                                ? 'rgba(16, 185, 129, 0.25)'
                                 : isOwner
                                 ? 'rgba(39, 178, 155, 0.25)'
                                 : 'rgba(59, 130, 246, 0.25)'
@@ -471,161 +503,100 @@ export default function UnitDelegationModal({
                             justifyContent: 'center',
                           }}
                         >
-                          <HouseLine size={18} color={isVoted ? prelineColors.slate[600] : isOwner ? '#0d9488' : '#2563eb'} weight="fill" />
+                          <HouseLine
+                            size={18}
+                            color={
+                              isVoted
+                                ? '#64748b'
+                                : isSelfOccupied
+                                ? '#059669'
+                                : isOwner
+                                ? '#27b29b'
+                                : '#2563eb'
+                            }
+                            weight="fill"
+                          />
                         </Box>
                         <Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                fontWeight: 700,
-                                color: prelineColors.slate[800],
-                                fontSize: '0.9rem',
-                              }}
-                            >
-                              Unit {u.unitNo}
-                            </Typography>
-                            <Chip
-                              label={`${u.npp}% NPP`}
-                              size="small"
-                              sx={{
-                                height: 18,
-                                fontSize: '0.65rem',
-                                fontWeight: 600,
-                                backgroundColor: isVoted
-                                  ? prelineColors.slate[100]
-                                  : isOwner
-                                  ? 'rgba(39, 178, 155, 0.1)'
-                                  : 'rgba(59, 130, 246, 0.1)',
-                                color: isVoted ? prelineColors.slate[600] : isOwner ? '#0d9488' : '#2563eb',
-                                border: isVoted ? `1px solid ${prelineColors.slate[200]}` : 'none',
-                              }}
-                            />
-                          </Box>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              fontWeight: 700,
+                              color: isVoted ? prelineColors.slate[600] : prelineColors.slate[800],
+                              fontSize: '0.875rem',
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            Unit {u.unitNo}
+                          </Typography>
                           <Typography
                             variant="caption"
-                            sx={{ color: prelineColors.slate[500], fontSize: '0.75rem' }}
+                            sx={{
+                              color: isVoted ? prelineColors.slate[500] : prelineColors.slate[500],
+                              fontSize: '0.7rem',
+                            }}
                           >
-                            {u.tower} • {u.floor}
+                            {u.tenant?.name || 'Vacant Unit'}
                           </Typography>
                         </Box>
                       </Box>
 
-                      {/* Current Status Pill */}
-                      {isVoted ? (
+                      {/* Right chips (NPP + Occupant Badge / Locked Badge) */}
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                         <Chip
-                          icon={<Lock size={12} weight="bold" color={prelineColors.slate[600]} />}
-                          label="Vote Submitted (Locked)"
+                          label={`${u.npp}% NPP`}
                           size="small"
                           sx={{
                             height: 22,
                             fontSize: '0.675rem',
                             fontWeight: 700,
-                            backgroundColor: prelineColors.slate[100],
-                            color: prelineColors.slate[700],
-                            border: `1px solid ${prelineColors.slate[300]}`,
-                            '& .MuiChip-label': { px: 0.75 },
+                            backgroundColor: isVoted ? prelineColors.slate[200] : '#ffffff',
+                            border: `1px solid ${isVoted ? prelineColors.slate[300] : prelineColors.slate[300]}`,
+                            color: isVoted ? prelineColors.slate[600] : prelineColors.slate[700],
                           }}
                         />
-                      ) : (
-                        <Chip
-                          icon={
-                            isOwner ? (
-                              <User size={13} color="#0d9488" weight="bold" />
-                            ) : (
-                              <Users size={13} color="#2563eb" weight="bold" />
-                            )
-                          }
-                          label={isOwner ? 'Owner Vote' : 'Resident Vote'}
-                          size="small"
-                          sx={{
-                            height: 22,
-                            fontSize: '0.675rem',
-                            fontWeight: 600,
-                            backgroundColor: isOwner ? 'rgba(39, 178, 155, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                            color: isOwner ? '#0d9488' : '#2563eb',
-                            border: `1px solid ${isOwner ? 'rgba(39, 178, 155, 0.25)' : 'rgba(59, 130, 246, 0.25)'}`,
-                            '& .MuiChip-label': { px: 0.75 },
-                          }}
-                        />
-                      )}
+
+                        {isVoted ? (
+                          <Chip
+                            icon={<Lock size={12} weight="bold" color="#475569" />}
+                            label="Locked"
+                            size="small"
+                            sx={{
+                              height: 22,
+                              fontSize: '0.675rem',
+                              fontWeight: 700,
+                              backgroundColor: prelineColors.slate[200],
+                              color: prelineColors.slate[700],
+                              border: `1px solid ${prelineColors.slate[300]}`,
+                            }}
+                          />
+                        ) : residentBadge ? (
+                          <Chip
+                            label={residentBadge.label}
+                            size="small"
+                            sx={{
+                              height: 22,
+                              fontSize: '0.675rem',
+                              fontWeight: 600,
+                              backgroundColor: residentBadge.bg,
+                              color: residentBadge.color,
+                              border: `1px solid ${residentBadge.border}`,
+                            }}
+                          />
+                        ) : null}
+                      </Box>
                     </Box>
 
-                    {/* Voter Representative Box */}
-                    {u.tenant && (() => {
-                      const voterName = isOwner ? 'Rian Pratama' : u.tenant.name;
-                      const voterStatus = isOwner
-                        ? isSelfOccupied
-                          ? 'Owner & Resident'
-                          : 'Owner'
-                        : (u.tenant.status || 'Resident');
-                      const voterBadge = isOwner
-                        ? {
-                            label: isSelfOccupied ? 'Dihuni Sendiri' : 'Owner',
-                            bg: 'rgba(16, 185, 129, 0.1)',
-                            color: '#059669',
-                            border: 'rgba(16, 185, 129, 0.25)',
-                          }
-                        : residentBadge;
-
-                      return (
-                        <Box
-                          sx={{
-                            px: 1.25,
-                            py: 0.9,
-                            borderRadius: '10px',
-                            backgroundColor: isOwner ? 'rgba(16, 185, 129, 0.04)' : prelineColors.slate[50],
-                            border: `1px solid ${isOwner ? 'rgba(16, 185, 129, 0.2)' : prelineColors.slate[200]}`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            flexWrap: 'wrap',
-                            gap: 1,
-                            transition: 'all 0.2s ease',
-                          }}
-                        >
-                          <Box>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: 700, color: prelineColors.slate[800], fontSize: '0.825rem', lineHeight: 1.2 }}
-                            >
-                              {voterName}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              sx={{ color: prelineColors.slate[500], fontSize: '0.7rem' }}
-                            >
-                              {voterStatus}
-                            </Typography>
-                          </Box>
-
-                          {voterBadge && (
-                            <Chip
-                              label={voterBadge.label}
-                              size="small"
-                              sx={{
-                                height: 20,
-                                fontSize: '0.675rem',
-                                fontWeight: 600,
-                                backgroundColor: voterBadge.bg,
-                                color: voterBadge.color,
-                                border: `1px solid ${voterBadge.border}`,
-                                '& .MuiChip-label': { px: 0.8 },
-                              }}
-                            />
-                          )}
-                        </Box>
-                      );
-                    })()}
-
-                    {/* CASE 1: UNIT HAS ALREADY SUBMITTED VOTE (LOCKED VALIDATION) */}
+                    {/* Unit Representation Section */}
                     {isVoted ? (
+                      /* CASE 1: ALREADY VOTED UNIT (LOCKED TO PREVENT DOUBLE VOTING) */
                       <Box
                         sx={{
                           p: 1.25,
-                          borderRadius: '10px',
+                          px: 1.5,
                           backgroundColor: prelineColors.slate[100],
-                          border: `1px solid ${prelineColors.slate[200]}`,
+                          borderRadius: '10px',
+                          border: `1px solid ${prelineColors.slate[300]}`,
                           display: 'flex',
                           alignItems: 'flex-start',
                           gap: 1,
@@ -642,22 +613,95 @@ export default function UnitDelegationModal({
                         </Box>
                       </Box>
                     ) : isSelfOccupied ? (
-                      /* CASE 2: SELF-OCCUPIED UNIT */
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, px: 0.5 }}>
-                        <HouseLine size={15} color="#059669" weight="fill" style={{ flexShrink: 0 }} />
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: '#059669',
-                            fontSize: '0.725rem',
-                            fontWeight: 600,
-                          }}
-                        >
-                          Automatically voted by you as owner and resident.
-                        </Typography>
+                      /* CASE 2: SELF-OCCUPIED UNIT (STYLED CARD) */
+                      <Box
+                        sx={{
+                          p: 1.25,
+                          px: 1.5,
+                          backgroundColor: 'rgba(16, 185, 129, 0.06)',
+                          borderRadius: '10px',
+                          border: '1px solid rgba(16, 185, 129, 0.2)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <HouseLine size={16} color="#059669" weight="fill" style={{ flexShrink: 0 }} />
+                        <Box sx={{ flex: 1 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontWeight: 700,
+                              color: '#059669',
+                              fontSize: '0.75rem',
+                              display: 'block',
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            Owner & Resident (Self-Occupied)
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: '#047857',
+                              fontSize: '0.7rem',
+                              display: 'block',
+                              mt: 0.2,
+                            }}
+                          >
+                            Automatically voted by you as the primary owner & resident.
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ) : isFinalized ? (
+                      /* CASE 3: FINALIZED REVIEW MODE (CLEAN REPRESENTATIVE INFO WITHOUT SWITCHES) */
+                      <Box
+                        sx={{
+                          p: 1.25,
+                          px: 1.5,
+                          backgroundColor: isOwner ? 'rgba(13, 148, 136, 0.06)' : 'rgba(37, 99, 235, 0.06)',
+                          borderRadius: '10px',
+                          border: isOwner ? '1px solid rgba(13, 148, 136, 0.2)' : '1px solid rgba(37, 99, 235, 0.2)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        {isOwner ? (
+                          <User size={16} color="#0d9488" weight="fill" style={{ flexShrink: 0 }} />
+                        ) : (
+                          <Users size={16} color="#2563eb" weight="fill" style={{ flexShrink: 0 }} />
+                        )}
+                        <Box sx={{ flex: 1 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontWeight: 700,
+                              color: isOwner ? '#0d9488' : '#2563eb',
+                              fontSize: '0.75rem',
+                              display: 'block',
+                              lineHeight: 1.2,
+                            }}
+                          >
+                            {isOwner ? 'Voted by Owner' : 'Delegated to Resident'}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              color: isOwner ? '#0f766e' : '#1d4ed8',
+                              fontSize: '0.7rem',
+                              display: 'block',
+                              mt: 0.2,
+                            }}
+                          >
+                            {isOwner
+                              ? 'Vote will be cast by Rian Pratama (Owner).'
+                              : `Vote will be cast by ${u.tenant?.name || 'Resident'} (${residentBadge ? residentBadge.label : 'Resident'}).`}
+                          </Typography>
+                        </Box>
                       </Box>
                     ) : (
-                      /* CASE 3: DELEGABLE UNITS (NOT YET VOTED) */
+                      /* CASE 4: EDITABLE MODE (INTERACTIVE SWITCHES) */
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                         <Box
                           sx={{
@@ -807,100 +851,72 @@ export default function UnitDelegationModal({
             </Box>
           </Box>
 
-          {/* Bottom Action Footer */}
-          <Box
-            sx={{
-              p: 2,
-              px: 2.5,
-              borderTop: `1px solid ${prelineColors.slate[200]}`,
-              backgroundColor: '#ffffff',
-              display: 'flex',
-              gap: 1.25,
-            }}
-          >
-            {isFinalized ? (
+          {/* Bottom Action Footer (Only shown in Editable mode; hidden in Finalized Review Mode) */}
+          {!isFinalized && (
+            <Box
+              sx={{
+                p: 2,
+                px: 2.5,
+                borderTop: `1px solid ${prelineColors.slate[200]}`,
+                backgroundColor: '#ffffff',
+                display: 'flex',
+                gap: 1.25,
+              }}
+            >
+              <Button
+                variant="outlined"
+                onClick={onClose}
+                sx={{
+                  flex: 1,
+                  py: 1.2,
+                  borderRadius: '10px',
+                  borderColor: prelineColors.slate[300],
+                  color: prelineColors.slate[700],
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  textTransform: 'none',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    backgroundColor: prelineColors.slate[50],
+                    borderColor: prelineColors.slate[400],
+                    boxShadow: 'none',
+                  },
+                  '&:active': {
+                    backgroundColor: prelineColors.slate[100],
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+
               <Button
                 variant="contained"
                 disableElevation
-                onClick={onClose}
-                fullWidth
+                onClick={handleInitiateSave}
+                startIcon={<Check size={18} weight="bold" />}
                 sx={{
+                  flex: 2,
                   py: 1.2,
                   borderRadius: '10px',
-                  backgroundColor: prelineColors.slate[800],
+                  backgroundColor: '#27b29b',
                   color: '#ffffff',
                   fontWeight: 700,
                   fontSize: '0.85rem',
                   textTransform: 'none',
                   boxShadow: 'none',
                   '&:hover': {
-                    backgroundColor: prelineColors.slate[900],
+                    backgroundColor: '#27b29b',
                     boxShadow: 'none',
                   },
                   '&:active': {
-                    backgroundColor: prelineColors.slate[900],
+                    backgroundColor: '#1e8f7c',
                   },
                 }}
               >
-                Close (Delegation Finalized)
+                Save Representation
               </Button>
-            ) : (
-              <>
-                <Button
-                  variant="outlined"
-                  onClick={onClose}
-                  sx={{
-                    flex: 1,
-                    py: 1.2,
-                    borderRadius: '10px',
-                    borderColor: prelineColors.slate[300],
-                    color: prelineColors.slate[700],
-                    fontWeight: 600,
-                    fontSize: '0.85rem',
-                    textTransform: 'none',
-                    boxShadow: 'none',
-                    '&:hover': {
-                      backgroundColor: prelineColors.slate[50],
-                      borderColor: prelineColors.slate[400],
-                      boxShadow: 'none',
-                    },
-                    '&:active': {
-                      backgroundColor: prelineColors.slate[100],
-                    },
-                  }}
-                >
-                  Cancel
-                </Button>
-
-                <Button
-                  variant="contained"
-                  disableElevation
-                  onClick={handleInitiateSave}
-                  startIcon={<Check size={18} weight="bold" />}
-                  sx={{
-                    flex: 2,
-                    py: 1.2,
-                    borderRadius: '10px',
-                    backgroundColor: '#27b29b',
-                    color: '#ffffff',
-                    fontWeight: 700,
-                    fontSize: '0.85rem',
-                    textTransform: 'none',
-                    boxShadow: 'none',
-                    '&:hover': {
-                      backgroundColor: '#27b29b',
-                      boxShadow: 'none',
-                    },
-                    '&:active': {
-                      backgroundColor: '#1e8f7c',
-                    },
-                  }}
-                >
-                  Save Representation
-                </Button>
-              </>
-            )}
-          </Box>
+            </Box>
+          )}
         </Box>
       </Slide>
 
