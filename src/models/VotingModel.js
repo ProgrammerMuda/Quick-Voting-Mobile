@@ -229,12 +229,32 @@ export class VotingModel {
         const activeQuestions = VotingModel.getActiveQuestions(item);
         const allAnswered = activeQuestions.every((q) => mergedIds.includes(q.id));
 
+        // When Owner votes, lock and finalize delegation for this poll
+        const currentUnits = item.userUnit?.unitsList || DEFAULT_USER_UNITS;
+        const updatedUnits = currentUnits.map((u) => {
+          if (u.representedBy === 'OWNER' || !u.representedBy) {
+            return {
+              ...u,
+              representedBy: 'OWNER',
+              hasVoted: true,
+              votedBy: 'Rian Pratama (Owner)',
+              votedAt: 'Just now',
+            };
+          }
+          return u;
+        });
+
         return {
           ...item,
           userVoted: true,
+          isDelegationFinalized: true, // Automatically locked upon vote submission!
           answeredQuestionIds: mergedIds,
           userAnswers: mergedAnswers,
           status: item.status,
+          userUnit: {
+            ...item.userUnit,
+            unitsList: updatedUnits,
+          },
         };
       }
       return item;
