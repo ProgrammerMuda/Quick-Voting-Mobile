@@ -821,6 +821,7 @@ export default function UnitDelegationModal({
             {isFinalized ? (
               <Button
                 variant="contained"
+                disableElevation
                 onClick={onClose}
                 fullWidth
                 sx={{
@@ -831,6 +832,11 @@ export default function UnitDelegationModal({
                   fontWeight: 700,
                   fontSize: '0.85rem',
                   textTransform: 'none',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    backgroundColor: prelineColors.slate[900],
+                    boxShadow: 'none',
+                  },
                   '&:active': {
                     backgroundColor: prelineColors.slate[900],
                   },
@@ -852,6 +858,12 @@ export default function UnitDelegationModal({
                     fontWeight: 600,
                     fontSize: '0.85rem',
                     textTransform: 'none',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: prelineColors.slate[50],
+                      borderColor: prelineColors.slate[400],
+                      boxShadow: 'none',
+                    },
                     '&:active': {
                       backgroundColor: prelineColors.slate[100],
                     },
@@ -862,6 +874,7 @@ export default function UnitDelegationModal({
 
                 <Button
                   variant="contained"
+                  disableElevation
                   onClick={handleInitiateSave}
                   startIcon={<Check size={18} weight="bold" />}
                   sx={{
@@ -873,7 +886,11 @@ export default function UnitDelegationModal({
                     fontWeight: 700,
                     fontSize: '0.85rem',
                     textTransform: 'none',
-                    boxShadow: '0 2px 8px rgba(39, 178, 155, 0.3)',
+                    boxShadow: 'none',
+                    '&:hover': {
+                      backgroundColor: '#27b29b',
+                      boxShadow: 'none',
+                    },
                     '&:active': {
                       backgroundColor: '#1e8f7c',
                     },
@@ -1203,6 +1220,12 @@ export default function UnitDelegationModal({
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 textTransform: 'none',
+                boxShadow: 'none',
+                '&:hover': {
+                  backgroundColor: prelineColors.slate[50],
+                  borderColor: prelineColors.slate[400],
+                  boxShadow: 'none',
+                },
                 '&:active': {
                   backgroundColor: prelineColors.slate[100],
                 },
@@ -1213,6 +1236,7 @@ export default function UnitDelegationModal({
 
             <Button
               variant="contained"
+              disableElevation
               onClick={handleFinalConfirm}
               startIcon={<Check size={18} weight="bold" />}
               sx={{
@@ -1224,7 +1248,11 @@ export default function UnitDelegationModal({
                 fontWeight: 700,
                 fontSize: '0.85rem',
                 textTransform: 'none',
-                boxShadow: '0 2px 8px rgba(39, 178, 155, 0.3)',
+                boxShadow: 'none',
+                '&:hover': {
+                  backgroundColor: '#27b29b',
+                  boxShadow: 'none',
+                },
                 '&:active': {
                   backgroundColor: '#1e8f7c',
                 },
