@@ -8,6 +8,7 @@ import QuestionEmptyState from '../components/Poll/QuestionEmptyState';
 import VoteConfirmModal from '../components/Poll/VoteConfirmModal';
 import VoteSuccessModal from '../components/Poll/VoteSuccessModal';
 import UnitDelegationModal from '../components/Poll/UnitDelegationModal';
+import DelegationSuccessModal from '../components/Poll/DelegationSuccessModal';
 import { prelineColors } from '../theme/theme';
 import { VotingModel } from '../models/VotingModel';
 
@@ -25,6 +26,7 @@ export default function PollDetailView({
   showConfirmModal,
   showSuccessModal,
   showDelegationModal,
+  showDelegationSuccessModal,
   delegationToast,
   onBack,
   onAnswerChange,
@@ -36,6 +38,7 @@ export default function PollDetailView({
   onCloseSuccessAndGoList,
   onOpenDelegationModal,
   onCloseDelegationModal,
+  onCloseDelegationSuccessModal,
   onToggleUnitInline,
   onSetModeInline,
   onSaveRepresentation,
@@ -234,6 +237,14 @@ export default function PollDetailView({
         onClose={onCloseDelegationModal}
         poll={selectedPoll}
         onSaveRepresentation={onSaveRepresentation}
+      />
+
+      {/* Delegation Success Bottom Sheet Modal (Matching user illustration design) */}
+      <DelegationSuccessModal
+        open={Boolean(showDelegationSuccessModal)}
+        onClose={onCloseDelegationSuccessModal}
+        title="Success Update Delegation"
+        description="Your unit voting representation has been successfully updated and finalized."
       />
 
       {/* Toast Feedback Notification */}

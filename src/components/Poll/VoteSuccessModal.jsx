@@ -25,10 +25,14 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
       <Slide direction="up" in={open} mountOnEnter unmountOnExit>
         <Box
           sx={{
-            position: 'absolute',
+            position: 'fixed',
             bottom: 0,
             left: 0,
             right: 0,
+            maxWidth: 480,
+            mx: 'auto',
+            maxHeight: '92vh',
+            overflowY: 'auto',
             zIndex: 40,
             backgroundColor: '#ffffff',
             borderTopLeftRadius: '24px',
@@ -46,19 +50,19 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
           {/* Drag Handle Bar */}
           <Box
             sx={{
-              width: 40,
+              width: 38,
               height: 4,
               borderRadius: 2,
               backgroundColor: prelineColors.slate[300],
-              mb: 2.5,
+              mb: 2,
             }}
           />
 
-          {/* Custom Success Illustration — Matching button row width */}
+          {/* Success Illustration (Full width matching button row width) */}
           <Box
             component="img"
             src="/vote-success.png"
-            alt="Vote Submitted"
+            alt="Vote Submitted Successfully"
             sx={{
               width: '100%',
               height: 'auto',
@@ -72,14 +76,14 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
           <Typography
             variant="h6"
             sx={{
-              fontWeight: 600,
-              color: prelineColors.slate[800],
-              fontSize: '1.2rem',
+              fontWeight: 800,
+              color: prelineColors.slate[900],
+              fontSize: '1.25rem',
               mb: 0.5,
-              lineHeight: 1.3,
+              lineHeight: 1.25,
             }}
           >
-            Your vote has been submitted
+            Vote Successfully Submitted!
           </Typography>
 
           <Typography
@@ -87,11 +91,12 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
             sx={{
               color: prelineColors.slate[500],
               fontSize: '0.85rem',
-              mb: 2.5,
-              lineHeight: 1.45,
+              mb: 2.25,
+              lineHeight: 1.4,
+              maxWidth: 340,
             }}
           >
-            Thank you for sharing your opinion.
+            Thank you for participating. Your vote and NPP weight have been securely recorded.
           </Typography>
 
           {/* Summary Card */}
@@ -110,7 +115,7 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
                 {isEvent ? (
                   <Chip
-                    icon={<CalendarCheck size={16} color="#27b29b" weight="fill" />}
+                    icon={<CalendarCheck size={15} color="#27b29b" weight="fill" />}
                     label="Event Voting"
                     size="small"
                     sx={{
@@ -124,7 +129,7 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
                   />
                 ) : (
                   <Chip
-                    icon={<Lightning size={16} color="#27b29b" weight="fill" />}
+                    icon={<Lightning size={15} color="#27b29b" weight="fill" />}
                     label="Quick Voting"
                     size="small"
                     sx={{
@@ -144,37 +149,43 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
                   sx={{
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
                     color: '#059669',
-                    fontWeight: 600,
+                    fontWeight: 700,
                     fontSize: '0.7rem',
                     height: 22,
+                    border: '1px solid rgba(16, 185, 129, 0.25)',
                   }}
                 />
               </Box>
 
-              <Typography variant="body2" sx={{ fontWeight: 600, color: prelineColors.slate[800], fontSize: '0.875rem' }}>
+              <Typography variant="body2" sx={{ fontWeight: 700, color: prelineColors.slate[800], fontSize: '0.875rem', lineHeight: 1.3 }}>
                 {poll.title}
               </Typography>
             </Box>
           )}
 
           {/* Action Buttons */}
-          <Box sx={{ width: '100%', display: 'flex', gap: 1.5 }}>
+          <Box sx={{ width: '100%', display: 'flex', gap: 1.25 }}>
             <Button
               variant="outlined"
               fullWidth
               onClick={onClose}
               sx={{
                 flex: 1,
-                py: 1.25,
-                fontSize: '0.875rem',
+                py: 1.2,
+                fontSize: '0.85rem',
                 fontWeight: 600,
                 borderRadius: '10px',
                 border: `1px solid ${prelineColors.slate[300]}`,
                 color: prelineColors.slate[700],
                 textTransform: 'none',
+                boxShadow: 'none',
                 '&:hover': {
-                  border: `1px solid ${prelineColors.slate[300]}`,
-                  backgroundColor: 'transparent',
+                  borderColor: prelineColors.slate[400],
+                  backgroundColor: prelineColors.slate[50],
+                  boxShadow: 'none',
+                },
+                '&:active': {
+                  backgroundColor: prelineColors.slate[100],
                 },
               }}
             >
@@ -182,14 +193,15 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
             </Button>
             <Button
               variant="contained"
+              disableElevation
               fullWidth
               onClick={onViewResults}
               endIcon={<ArrowRight size={18} weight="bold" />}
               sx={{
-                flex: 1,
-                py: 1.25,
-                fontSize: '0.875rem',
-                fontWeight: 600,
+                flex: 1.2,
+                py: 1.2,
+                fontSize: '0.85rem',
+                fontWeight: 700,
                 borderRadius: '10px',
                 backgroundColor: '#27b29b',
                 color: '#ffffff',
@@ -198,6 +210,9 @@ export default function VoteSuccessModal({ open, onClose, onViewResults, poll })
                 '&:hover': {
                   backgroundColor: '#27b29b',
                   boxShadow: 'none',
+                },
+                '&:active': {
+                  backgroundColor: '#1e8f7c',
                 },
               }}
             >

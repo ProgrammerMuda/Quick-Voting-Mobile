@@ -32,6 +32,9 @@ export function useVotingController() {
   // Unit delegation bottom sheet modal state
   const [showDelegationModal, setShowDelegationModal] = useState(false);
 
+  // Delegation success bottom sheet modal state
+  const [showDelegationSuccessModal, setShowDelegationSuccessModal] = useState(false);
+
   // Toast feedback state
   const [delegationToast, setDelegationToast] = useState(null);
 
@@ -208,7 +211,12 @@ export function useVotingController() {
     const updatedPoll = updatedItems.find((i) => i.id === selectedPoll.id);
     setSelectedPoll(updatedPoll || selectedPoll);
 
-    setDelegationToast('Voting delegation finalized and confirmed for this session!');
+    // Open Success Bottom Sheet Modal matching user design
+    setShowDelegationSuccessModal(true);
+  };
+
+  const handleCloseDelegationSuccessModal = () => {
+    setShowDelegationSuccessModal(false);
   };
 
   const handleCloseDelegationToast = () => {
@@ -233,6 +241,7 @@ export function useVotingController() {
     showConfirmModal,
     showSuccessModal,
     showDelegationModal,
+    showDelegationSuccessModal,
     delegationToast,
 
     // Action Handlers
@@ -251,6 +260,7 @@ export function useVotingController() {
     handleToggleUnitInline,
     handleSetModeInline,
     handleSaveRepresentation,
+    handleCloseDelegationSuccessModal,
     handleCloseDelegationToast,
   };
 }

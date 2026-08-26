@@ -51,6 +51,7 @@ export default function App() {
             showConfirmModal={controller.showConfirmModal}
             showSuccessModal={controller.showSuccessModal}
             showDelegationModal={controller.showDelegationModal}
+            showDelegationSuccessModal={controller.showDelegationSuccessModal}
             delegationToast={controller.delegationToast}
             onBack={controller.handleBackToList}
             onAnswerChange={controller.handleAnswerChange}
@@ -62,6 +63,7 @@ export default function App() {
             onCloseSuccessAndGoList={controller.handleCloseSuccessAndGoList}
             onOpenDelegationModal={controller.handleOpenDelegationModal}
             onCloseDelegationModal={controller.handleCloseDelegationModal}
+            onCloseDelegationSuccessModal={controller.handleCloseDelegationSuccessModal}
             onToggleUnitInline={controller.handleToggleUnitInline}
             onSetModeInline={controller.handleSetModeInline}
             onSaveRepresentation={controller.handleSaveRepresentation}
