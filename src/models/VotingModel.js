@@ -120,13 +120,14 @@ export class VotingModel {
   }
 
   /**
-   * Batch update all units for a poll with a new units array.
+   * Batch update all units for a poll with a new units array and optional finalization flag.
    */
-  static setUnitsListForPoll(items, pollId, newUnitsList) {
+  static setUnitsListForPoll(items, pollId, newUnitsList, isDelegationFinalized = false) {
     return items.map((item) => {
       if (item.id === pollId) {
         return {
           ...item,
+          isDelegationFinalized: isDelegationFinalized || Boolean(item.isDelegationFinalized),
           userUnit: {
             ...item.userUnit,
             unitsList: newUnitsList,

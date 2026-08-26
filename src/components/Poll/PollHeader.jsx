@@ -14,6 +14,7 @@ import {
   CaretRight,
   SlidersHorizontal,
   Info,
+  Lock,
 } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
 import VotingStatus from '../Voting/VotingStatus';
@@ -30,6 +31,7 @@ export default function PollHeader({
   const summary = VotingModel.getRepresentationSummary(unitsList);
 
   const isReadOnly = poll.status !== 'ongoing' && poll.status !== 'OPEN';
+  const isDelegationFinalized = Boolean(poll.isDelegationFinalized);
 
   return (
     <Box
@@ -166,11 +168,19 @@ export default function PollHeader({
             mb: 1.75,
           }}
         >
-          <Clock size={18} color="#27b29b" weight="bold" />
-          <Typography variant="caption" sx={{ color: prelineColors.slate[500], fontWeight: 500, fontSize: '0.8rem' }}>
-            Deadline:
-          </Typography>
-          <Typography variant="body2" sx={{ color: prelineColors.slate[700], fontWeight: 600, fontSize: '0.825rem' }}>
+          <Clock size={16} color="#d97706" weight="bold" />
+          <Typography
+            variant="caption"
+            sx={{
+              color: '#d97706',
+              fontWeight: 600,
+              fontSize: '0.75rem',
+              backgroundColor: 'rgba(217, 119, 6, 0.1)',
+              px: 0.75,
+              py: 0.2,
+              borderRadius: '6px',
+            }}
+          >
             {poll.deadline}
           </Typography>
         </Box>
@@ -254,66 +264,125 @@ export default function PollHeader({
             </Box>
           </Box>
 
-          {/* Right: Manage Action Button */}
+          {/* Right: Action Button */}
           {!isReadOnly && (
-            <Box
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.35,
-                px: 1.25,
-                py: 0.6,
-                borderRadius: '8px',
-                backgroundColor: 'rgba(39, 178, 155, 0.08)',
-                border: '1px solid rgba(39, 178, 155, 0.25)',
-                color: '#1e8f7c',
-                flexShrink: 0,
-              }}
-            >
-              <Typography
-                variant="caption"
+            isDelegationFinalized ? (
+              <Box
                 sx={{
-                  fontWeight: 700,
-                  fontSize: '0.75rem',
-                  lineHeight: 1,
-                  color: '#1e8f7c',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 0.4,
+                  px: 1.1,
+                  py: 0.55,
+                  borderRadius: '8px',
+                  backgroundColor: prelineColors.slate[100],
+                  border: `1px solid ${prelineColors.slate[200]}`,
+                  color: prelineColors.slate[600],
+                  flexShrink: 0,
                 }}
               >
-                Manage
-              </Typography>
-              <CaretRight size={13} weight="bold" color="#1e8f7c" />
-            </Box>
+                <Lock size={12} weight="bold" color={prelineColors.slate[600]} />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: '0.725rem',
+                    lineHeight: 1,
+                    color: prelineColors.slate[600],
+                  }}
+                >
+                  Finalized
+                </Typography>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 0.35,
+                  px: 1.25,
+                  py: 0.6,
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(39, 178, 155, 0.08)',
+                  border: '1px solid rgba(39, 178, 155, 0.25)',
+                  color: '#1e8f7c',
+                  flexShrink: 0,
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: '0.75rem',
+                    lineHeight: 1,
+                    color: '#1e8f7c',
+                  }}
+                >
+                  Manage
+                </Typography>
+                <CaretRight size={13} weight="bold" color="#1e8f7c" />
+              </Box>
+            )
           )}
         </Box>
 
         {/* Smart Hint Bar */}
         {!isReadOnly && (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 1,
-              mt: 1.25,
-              py: 1.1,
-              px: 1.5,
-              borderRadius: '10px',
-              backgroundColor: 'rgba(39, 178, 155, 0.08)',
-              border: '1px solid rgba(39, 178, 155, 0.22)',
-            }}
-          >
-            <Info size={18} color="#0d9488" weight="fill" style={{ flexShrink: 0, marginTop: 2 }} />
-            <Typography
-              variant="caption"
+          isDelegationFinalized ? (
+            <Box
               sx={{
-                color: '#0f766e',
-                fontSize: '0.75rem',
-                lineHeight: 1.4,
-                fontWeight: 500,
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 1,
+                mt: 1.25,
+                py: 1.1,
+                px: 1.5,
+                borderRadius: '10px',
+                backgroundColor: prelineColors.slate[100],
+                border: `1px solid ${prelineColors.slate[200]}`,
               }}
             >
-              Want your residents to vote? Tap <strong>Manage</strong> to delegate voting rights per unit, giving each resident a chance to participate.
-            </Typography>
-          </Box>
+              <Lock size={16} color={prelineColors.slate[600]} weight="bold" style={{ flexShrink: 0, marginTop: 2 }} />
+              <Typography
+                variant="caption"
+                sx={{
+                  color: prelineColors.slate[600],
+                  fontSize: '0.75rem',
+                  lineHeight: 1.4,
+                  fontWeight: 500,
+                }}
+              >
+                Voting delegation is <strong>finalized</strong> for this session. Tap card to review representation.
+              </Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 1,
+                mt: 1.25,
+                py: 1.1,
+                px: 1.5,
+                borderRadius: '10px',
+                backgroundColor: 'rgba(39, 178, 155, 0.08)',
+                border: '1px solid rgba(39, 178, 155, 0.22)',
+              }}
+            >
+              <Info size={18} color="#0d9488" weight="fill" style={{ flexShrink: 0, marginTop: 2 }} />
+              <Typography
+                variant="caption"
+                sx={{
+                  color: '#0f766e',
+                  fontSize: '0.75rem',
+                  lineHeight: 1.4,
+                  fontWeight: 500,
+                }}
+              >
+                Want your residents to vote? Tap <strong>Manage</strong> to delegate voting rights per unit, giving each resident a chance to participate.
+              </Typography>
+            </Box>
+          )
         )}
       </Box>
     </Box>

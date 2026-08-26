@@ -20,6 +20,8 @@ import {
   Key,
   CheckCircle,
   Lock,
+  Warning,
+  Info,
 } from '@phosphor-icons/react';
 import { prelineColors } from '../../theme/theme';
 import { VotingModel } from '../../models/VotingModel';
@@ -63,16 +65,21 @@ export default function UnitDelegationModal({
 }) {
   const initialUnits = VotingModel.getUnitsList(poll);
   const [localUnits, setLocalUnits] = useState(initialUnits);
+  const [showConfirmSheet, setShowConfirmSheet] = useState(false);
+
+  const isFinalized = Boolean(poll?.isDelegationFinalized);
 
   // Sync state on modal open
   useEffect(() => {
     if (open) {
       setLocalUnits(VotingModel.getUnitsList(poll));
+      setShowConfirmSheet(false);
     }
   }, [open, poll]);
 
-  // Toggle single unit representation (except self-occupied or already submitted/voted units)
+  // Toggle single unit representation (disabled if finalized, already voted, or self-occupied)
   const handleToggleUnit = (unitNo, representedBy) => {
+    if (isFinalized) return;
     setLocalUnits((prev) =>
       prev.map((u) => {
         if (u.unitNo === unitNo) {
@@ -90,6 +97,7 @@ export default function UnitDelegationModal({
 
   // Bulk set all to Owner (skipping already voted units)
   const handleSetAllOwner = () => {
+    if (isFinalized) return;
     setLocalUnits((prev) =>
       prev.map((u) => (u.hasVoted ? u : { ...u, representedBy: 'OWNER' }))
     );
@@ -97,6 +105,7 @@ export default function UnitDelegationModal({
 
   // Bulk set all to Tenant (skipping already voted or self-occupied units)
   const handleSetAllTenant = () => {
+    if (isFinalized) return;
     setLocalUnits((prev) =>
       prev.map((u) => {
         if (u.hasVoted) return u;
@@ -116,10 +125,21 @@ export default function UnitDelegationModal({
   const ownerNpp = ownerUnits.reduce((acc, u) => acc + (parseFloat(u.npp) || 0), 0).toFixed(2);
   const tenantNpp = tenantUnits.reduce((acc, u) => acc + (parseFloat(u.npp) || 0), 0).toFixed(2);
 
-  const handleSave = () => {
-    if (onSaveRepresentation) {
-      onSaveRepresentation(localUnits);
+  // Open confirmation bottom sheet on Save
+  const handleInitiateSave = () => {
+    if (isFinalized) {
+      onClose();
+      return;
     }
+    setShowConfirmSheet(true);
+  };
+
+  // Final confirmation action (1-time only)
+  const handleFinalConfirm = () => {
+    if (onSaveRepresentation) {
+      onSaveRepresentation(localUnits, true);
+    }
+    setShowConfirmSheet(false);
     onClose();
   };
 
@@ -798,9 +818,382 @@ export default function UnitDelegationModal({
               gap: 1.25,
             }}
           >
+            {isFinalized ? (
+              <Button
+                variant="contained"
+                onClick={onClose}
+                fullWidth
+                sx={{
+                  py: 1.2,
+                  borderRadius: '10px',
+                  backgroundColor: prelineColors.slate[800],
+                  color: '#ffffff',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  textTransform: 'none',
+                  '&:active': {
+                    backgroundColor: prelineColors.slate[900],
+                  },
+                }}
+              >
+                Close (Delegation Finalized)
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant="outlined"
+                  onClick={onClose}
+                  sx={{
+                    flex: 1,
+                    py: 1.2,
+                    borderRadius: '10px',
+                    borderColor: prelineColors.slate[300],
+                    color: prelineColors.slate[700],
+                    fontWeight: 600,
+                    fontSize: '0.85rem',
+                    textTransform: 'none',
+                    '&:active': {
+                      backgroundColor: prelineColors.slate[100],
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  variant="contained"
+                  onClick={handleInitiateSave}
+                  startIcon={<Check size={18} weight="bold" />}
+                  sx={{
+                    flex: 2,
+                    py: 1.2,
+                    borderRadius: '10px',
+                    backgroundColor: '#27b29b',
+                    color: '#ffffff',
+                    fontWeight: 700,
+                    fontSize: '0.85rem',
+                    textTransform: 'none',
+                    boxShadow: '0 2px 8px rgba(39, 178, 155, 0.3)',
+                    '&:active': {
+                      backgroundColor: '#1e8f7c',
+                    },
+                  }}
+                >
+                  Save Representation
+                </Button>
+              </>
+            )}
+          </Box>
+        </Box>
+      </Slide>
+
+      {/* ========================================================================= */}
+      {/* CONFIRMATION BOTTOM SHEET (1-TIME DELEGATION ENFORCEMENT) */}
+      {/* ========================================================================= */}
+      <Backdrop
+        open={showConfirmSheet}
+        onClick={() => setShowConfirmSheet(false)}
+        sx={{
+          zIndex: 65,
+          backgroundColor: 'rgba(15, 23, 42, 0.65)',
+          backdropFilter: 'blur(4px)',
+        }}
+      />
+
+      <Slide direction="up" in={showConfirmSheet} mountOnEnter unmountOnExit>
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            maxHeight: '90vh',
+            maxWidth: 480,
+            mx: 'auto',
+            backgroundColor: '#ffffff',
+            borderTopLeftRadius: '24px',
+            borderTopRightRadius: '24px',
+            boxShadow: '0 -8px 30px rgba(0, 0, 0, 0.2)',
+            zIndex: 70,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Top Drag Handle */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              pt: 1.5,
+              pb: 0.5,
+            }}
+          >
+            <Box
+              sx={{
+                width: 36,
+                height: 4,
+                borderRadius: '2px',
+                backgroundColor: prelineColors.slate[300],
+              }}
+            />
+          </Box>
+
+          {/* Modal Header */}
+          <Box
+            sx={{
+              p: 2,
+              px: 2.5,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: `1px solid ${prelineColors.slate[100]}`,
+            }}
+          >
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 800,
+                color: prelineColors.slate[900],
+                fontSize: '1rem',
+              }}
+            >
+              Confirm Voting Delegation
+            </Typography>
+
+            <IconButton
+              size="small"
+              onClick={() => setShowConfirmSheet(false)}
+              sx={{
+                color: prelineColors.slate[400],
+                p: 0.5,
+                '&:hover': { color: prelineColors.slate[700] },
+              }}
+            >
+              <X size={18} weight="bold" />
+            </IconButton>
+          </Box>
+
+          {/* Content Area */}
+          <Box
+            sx={{
+              p: 2.5,
+              overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+            }}
+          >
+            {/* Header Shield & Description */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <Box
+                sx={{
+                  width: 46,
+                  height: 46,
+                  borderRadius: '14px',
+                  backgroundColor: 'rgba(39, 178, 155, 0.1)',
+                  border: '1px solid rgba(39, 178, 155, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <ShieldCheck size={26} color="#0d9488" weight="fill" />
+              </Box>
+              <Box>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontWeight: 700,
+                    color: prelineColors.slate[800],
+                    fontSize: '0.875rem',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  Finalize Voting Representation?
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: prelineColors.slate[500],
+                    fontSize: '0.75rem',
+                    lineHeight: 1.35,
+                    display: 'block',
+                    mt: 0.25,
+                  }}
+                >
+                  Please review your delegation summary. This action can only be configured once per session.
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* 1-Time Warning Box */}
+            <Box
+              sx={{
+                p: 1.5,
+                backgroundColor: 'rgba(217, 119, 6, 0.08)',
+                border: '1px solid rgba(217, 119, 6, 0.25)',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 1.25,
+              }}
+            >
+              <Lock size={18} color="#d97706" weight="fill" style={{ flexShrink: 0, marginTop: 2 }} />
+              <Box>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: 700,
+                    color: '#92400e',
+                    fontSize: '0.75rem',
+                    display: 'block',
+                    mb: 0.25,
+                  }}
+                >
+                  One-Time Configuration Notice
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: '#b45309',
+                    fontSize: '0.72rem',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Once confirmed, voting representation for this session will be <strong>permanently locked</strong> and cannot be modified again.
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Summary Card */}
+            <Box
+              sx={{
+                p: 1.75,
+                borderRadius: '14px',
+                backgroundColor: prelineColors.slate[50],
+                border: `1px solid ${prelineColors.slate[200]}`,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1.25,
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontWeight: 700,
+                    color: prelineColors.slate[700],
+                    fontSize: '0.75rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                  }}
+                >
+                  Delegation Summary
+                </Typography>
+                <Chip
+                  label={`${totalUnits} Units • ${(parseFloat(ownerNpp) + parseFloat(tenantNpp)).toFixed(2)}% NPP`}
+                  size="small"
+                  sx={{
+                    height: 20,
+                    fontSize: '0.675rem',
+                    fontWeight: 700,
+                    backgroundColor: '#ffffff',
+                    border: `1px solid ${prelineColors.slate[300]}`,
+                    color: prelineColors.slate[800],
+                  }}
+                />
+              </Box>
+
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
+                {/* Owner Tile */}
+                <Box
+                  sx={{
+                    p: 1.25,
+                    borderRadius: '10px',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid rgba(39, 178, 155, 0.25)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 0.25,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <User size={14} color="#0d9488" weight="bold" />
+                    <Typography
+                      variant="caption"
+                      sx={{ fontWeight: 600, color: prelineColors.slate[600], fontSize: '0.7rem' }}
+                    >
+                      Owner Votes
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 800, color: '#0d9488', fontSize: '0.95rem' }}
+                  >
+                    {ownerUnits.length} Units
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: prelineColors.slate[500], fontSize: '0.675rem' }}
+                  >
+                    {ownerNpp}% Total NPP
+                  </Typography>
+                </Box>
+
+                {/* Resident Tile */}
+                <Box
+                  sx={{
+                    p: 1.25,
+                    borderRadius: '10px',
+                    backgroundColor: '#ffffff',
+                    border: '1px solid rgba(59, 130, 246, 0.25)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 0.25,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <Users size={14} color="#2563eb" weight="bold" />
+                    <Typography
+                      variant="caption"
+                      sx={{ fontWeight: 600, color: prelineColors.slate[600], fontSize: '0.7rem' }}
+                    >
+                      Resident Votes
+                    </Typography>
+                  </Box>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 800, color: '#2563eb', fontSize: '0.95rem' }}
+                  >
+                    {tenantUnits.length} Units
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: prelineColors.slate[500], fontSize: '0.675rem' }}
+                  >
+                    {tenantNpp}% Total NPP
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Footer Action Buttons */}
+          <Box
+            sx={{
+              p: 2,
+              px: 2.5,
+              borderTop: `1px solid ${prelineColors.slate[200]}`,
+              backgroundColor: '#ffffff',
+              display: 'flex',
+              gap: 1.25,
+            }}
+          >
             <Button
               variant="outlined"
-              onClick={onClose}
+              onClick={() => setShowConfirmSheet(false)}
               sx={{
                 flex: 1,
                 py: 1.2,
@@ -815,12 +1208,12 @@ export default function UnitDelegationModal({
                 },
               }}
             >
-              Cancel
+              Review / Back
             </Button>
 
             <Button
               variant="contained"
-              onClick={handleSave}
+              onClick={handleFinalConfirm}
               startIcon={<Check size={18} weight="bold" />}
               sx={{
                 flex: 2,
@@ -837,7 +1230,7 @@ export default function UnitDelegationModal({
                 },
               }}
             >
-              Save Representation
+              Confirm & Finalize
             </Button>
           </Box>
         </Box>

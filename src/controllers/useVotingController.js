@@ -200,15 +200,15 @@ export function useVotingController() {
     setSelectedPoll(updatedPoll || selectedPoll);
   };
 
-  const handleSaveRepresentation = (updatedUnits) => {
+  const handleSaveRepresentation = (updatedUnits, isFinalized = true) => {
     if (!selectedPoll) return;
-    const updatedItems = VotingModel.setUnitsListForPoll(votingItems, selectedPoll.id, updatedUnits);
+    const updatedItems = VotingModel.setUnitsListForPoll(votingItems, selectedPoll.id, updatedUnits, isFinalized);
     setVotingItems(updatedItems);
 
     const updatedPoll = updatedItems.find((i) => i.id === selectedPoll.id);
     setSelectedPoll(updatedPoll || selectedPoll);
 
-    setDelegationToast('Unit voting representation updated successfully!');
+    setDelegationToast('Voting delegation finalized and confirmed for this session!');
   };
 
   const handleCloseDelegationToast = () => {
